@@ -79,7 +79,7 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
           className="w-full flex items-center justify-center gap-2 p-3 rounded-xl bg-white/15 hover:bg-red-500 text-white font-semibold text-sm transition-colors"
         >
           <span className="material-symbols-outlined text-lg">logout</span>
-          {t('par_deconnexion')}
+          {t('sidebar_deconnexion')}
         </button>
       </div>
 
@@ -89,14 +89,14 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
             <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="material-symbols-outlined text-red-500 text-3xl">logout</span>
             </div>
-            <h3 className="text-lg font-bold text-on-surface mb-2">{t('par_deconnecterQ')}</h3>
-            <p className="text-sm text-on-surface-variant mb-6">{t('par_deconnecterDesc')}</p>
+            <h3 className="text-lg font-bold text-on-surface mb-2">{t('sidebar_deconnecterQ')}</h3>
+            <p className="text-sm text-on-surface-variant mb-6">{t('sidebar_deconnecterDesc')}</p>
             <div className="flex gap-3">
               <button onClick={() => setConfirmDeconnexion(false)} className="flex-1 px-4 py-2.5 rounded-lg border border-outline-variant text-on-surface font-semibold text-sm hover:bg-surface-container-low">
-                {t('par_annuler')}
+                {t('sidebar_annuler')}
               </button>
               <button onClick={deconnecter} className="flex-1 px-4 py-2.5 rounded-lg bg-red-500 text-white font-semibold text-sm hover:bg-red-600 shadow-sm">
-                {t('par_confirmer')}
+                {t('sidebar_confirmer')}
               </button>
             </div>
           </div>

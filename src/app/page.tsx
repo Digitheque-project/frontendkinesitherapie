@@ -122,7 +122,7 @@ export default function DashboardPage() {
         {/* Patients (3 niveaux) */}
         <div className="bg-sky-50 rounded-xl border-[3px] border-sky-600 shadow-sm p-5">
           <div className="flex items-center justify-between">
-            <p className="text-lg font-bold text-black">Répartitions de patients</p>
+            <p className="text-lg font-bold text-black">Répartition des patients</p>
             <span className="text-lg font-extrabold text-black tabular-nums">
               {stats.tresUrgent + stats.urgent + stats.normal}
             </span>
@@ -202,7 +202,7 @@ export default function DashboardPage() {
         </div>
         {listeFiltree.length === 0 ? (
           <div className="px-6 py-8 text-center text-on-surface-variant text-sm">
-            {recherche ? 'Aucun resultat pour cette recherche.' : 'Aucun rendez-vous aujourd\'hui.'}
+            {recherche ? 'Aucun résultat pour cette recherche.' : 'Aucun rendez-vous aujourd\'hui.'}
           </div>
         ) : (
           <div className="divide-y divide-outline-variant max-h-[38vh] overflow-y-auto">
