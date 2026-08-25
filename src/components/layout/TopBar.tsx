@@ -222,7 +222,7 @@ export default function TopBar({
           </button>
 
           {open && (
-            <div className="absolute right-0 mt-3 w-96 max-h-[460px] overflow-y-auto bg-surface rounded-xl border-[3px] border-blue-500/50 shadow-xl z-50">
+            <div className="absolute right-0 mt-3 w-96 max-h-[460px] overflow-y-auto bg-blue-500/20 rounded-xl border-[3px] border-blue-500 shadow-xl z-50">
               <div className="px-4 py-3 border-b border-outline-variant sticky top-0 bg-surface">
                 <p className="font-semibold text-on-surface text-sm mb-2">Notifications ({nonLues.length})</p>
               </div>
@@ -239,7 +239,7 @@ export default function TopBar({
                       onClick={() => allerVersPrescription(n)}
                       className={
                         'px-4 py-3 border-b border-outline-variant last:border-b-0 transition-colors border-l-4 cursor-pointer ' +
-                        (n.lue ? 'bg-surface hover:bg-surface-container-low/50 border-l-outline-variant' : s.fond + ' hover:brightness-95 ' + s.bord)
+                        (n.lue ? 'bg-blue-500/20 hover:brightness-95 border-l-outline-variant' : 'bg-blue-500/80 hover:brightness-95 ' + s.bord)
                       }
                     >
                       <div className="flex items-center justify-between mb-1">

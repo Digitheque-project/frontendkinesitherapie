@@ -375,7 +375,7 @@ function PrescriptionsContent() {
               d.patientPrenom && d.patientNom ? `${d.patientPrenom} ${d.patientNom}` : 'Patient non identifié'
 
             return (
-              <div key={d.id} className={'bg-blue-50/90 rounded-xl border border-blue-500/60 shadow-sm border-l-4 p-4 ' + s.bord}>
+              <div key={d.id} className={'bg-blue-500/20 rounded-xl border border-blue-500 shadow-sm border-l-4 p-4 ' + s.bord}>
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-0">
                   <div className="min-w-0 md:w-48 md:flex-shrink-0">
                     <p className="font-semibold text-on-surface">{nomComplet}</p>
@@ -401,7 +401,7 @@ function PrescriptionsContent() {
                   <div className="md:flex-shrink-0">
                     <button
                       onClick={() => ouvrirModale(d)}
-                      className="w-full md:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:opacity-90 transition-colors"
+                      className="w-full md:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors"
                     >
                       <span className="material-symbols-outlined text-base">event_available</span>
                       Planifier
