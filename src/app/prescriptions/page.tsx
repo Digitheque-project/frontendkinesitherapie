@@ -375,7 +375,7 @@ function PrescriptionsContent() {
               d.patientPrenom && d.patientNom ? `${d.patientPrenom} ${d.patientNom}` : 'Patient non identifié'
 
             return (
-              <div key={d.id} className={'bg-blue-500/20 rounded-xl border border-blue-500 shadow-sm border-l-4 p-4 ' + s.bord}>
+              <div key={d.id} className={'bg-blue-500/10 rounded-xl border border-blue-500 shadow-sm border-l-4 p-4 ' + s.bord}>
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-0">
                   <div className="min-w-0 md:w-48 md:flex-shrink-0">
                     <p className="font-semibold text-on-surface">{nomComplet}</p>
