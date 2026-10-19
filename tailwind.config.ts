@@ -58,14 +58,10 @@ const config: Config = {
           DEFAULT: 'var(--color-outline)',
           variant: 'var(--color-outline-variant)',
         },
-      },
-      fontFamily: {
-        body: ['Inter', 'system-ui', 'sans-serif'],
-        manrope: ['Manrope', 'system-ui', 'sans-serif'],
-      },
-      colors: {
         // Plusieurs écrans utilisent encore les classes Tailwind blue-*/purple-*
         // par défaut : retintées en teal pour suivre la charte CHU.
+        // (Dans CE bloc colors : un second bloc colors dans extend remplaçait
+        // le premier et faisait disparaître background, surface... → build cassé.)
         blue: {
           50: '#eaf6f9', 100: '#d6eef3', 200: '#aedce6', 300: '#7fc3d3',
           400: '#4aa8be', 500: '#0a7ea4', 600: '#006a8c', 700: '#004a66',
@@ -76,6 +72,10 @@ const config: Config = {
           400: '#4aa8be', 500: '#0a7ea4', 600: '#006a8c', 700: '#004a66',
           800: '#003847', 900: '#012430',
         },
+      },
+      fontFamily: {
+        body: ['Inter', 'system-ui', 'sans-serif'],
+        manrope: ['Manrope', 'system-ui', 'sans-serif'],
       },
     },
   },

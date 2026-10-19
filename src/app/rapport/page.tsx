@@ -3,8 +3,9 @@
 import { useState, useMemo, useEffect } from 'react'
 import AppShell from '@/components/layout/AppShell'
 import { useLanguage } from '@/context/LanguageContext'
+import { KINE_API } from '@/lib/gateway'
 
-const API = process.env.NEXT_PUBLIC_API_URL
+const API = KINE_API
 
 interface Patient {
   id: number; nom: string; prenom: string; diagnostic?: string;

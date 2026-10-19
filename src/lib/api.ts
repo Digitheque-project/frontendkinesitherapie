@@ -1,9 +1,10 @@
 // Client API pour le backend Kinésithérapie (NestJS)
-// Base : NEXT_PUBLIC_API_URL (ex. http://localhost:3700/api)
+// Base : passerelle du CHU + /kine/api (voir lib/gateway.ts)
 
 import type { Patient, PaginatedResponse, Rendezvous } from '@/types'
+import { KINE_API } from '@/lib/gateway'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3700/api'
+const API_URL = KINE_API
 
 async function apiFetch<T>(path: string): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, { cache: 'no-store' })

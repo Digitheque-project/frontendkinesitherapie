@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams, usePathname } from 'next/navigation'
 import Sidebar from './Sidebar'
 import TopBar from './TopBar'
+import { LOGIN_URL, USER_API } from '@/lib/gateway'
 
 interface AppShellProps {
   children: React.ReactNode
@@ -12,8 +13,8 @@ interface AppShellProps {
   topBarActions?: React.ReactNode
 }
 
-const AUTH_URL = 'https://authentification-front.vercel.app/login'
-const USER_API_URL = process.env.NEXT_PUBLIC_USER_API_URL
+const AUTH_URL = LOGIN_URL
+const USER_API_URL = USER_API
 const TOKEN_KEY = 'authToken'
 
 function deconnecter(redirect = true) {

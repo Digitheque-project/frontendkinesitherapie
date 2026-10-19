@@ -22,6 +22,12 @@ function decoderTokenServeur(token: string): AuthInfo {
   }
 }
 
+/** Jeton du medecin connecte (cookie), transmis tel quel aux autres services. */
+export async function getAuthToken(): Promise<string | undefined> {
+  const cookieStore = await cookies()
+  return cookieStore.get('authToken')?.value
+}
+
 export async function getAuthInfo(): Promise<AuthInfo> {
   const cookieStore = await cookies()
   const token = cookieStore.get('authToken')?.value

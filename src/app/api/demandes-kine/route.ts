@@ -3,6 +3,9 @@ import { getDemandesKine } from '@/lib/prescriptionApi';
 import { getAccueilPatient } from '@/lib/accueilApi';
 import { getAuthInfo } from '@/lib/auth-server';
 
+// Lit le cookie de session du medecin connecte : jamais pre-generee.
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const { chuId, serviceId } = await getAuthInfo();

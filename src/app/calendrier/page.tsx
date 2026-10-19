@@ -4,8 +4,9 @@ import { useState, useEffect, useMemo } from 'react'
 import Sidebar from '@/components/layout/Sidebar'
 import TopBar from '@/components/layout/TopBar'
 import { useLanguage } from '@/context/LanguageContext'
+import { KINE_API } from '@/lib/gateway'
 
-const API = process.env.NEXT_PUBLIC_API_URL
+const API = KINE_API
 const HOURS = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00']
 
 interface Patient {

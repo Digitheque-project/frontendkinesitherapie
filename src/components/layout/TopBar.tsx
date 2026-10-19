@@ -4,8 +4,9 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/context/LanguageContext'
 import { getUtilisateurConnecte } from '@/lib/utilisateur'
+import { KINE_API } from '@/lib/gateway'
 
-const API = process.env.NEXT_PUBLIC_API_URL
+const API = KINE_API
 
 interface NotificationKine {
   id: number

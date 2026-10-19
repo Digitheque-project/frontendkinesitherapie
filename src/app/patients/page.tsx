@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import AppShell from '@/components/layout/AppShell'
 import { useLanguage } from '@/context/LanguageContext'
+import { KINE_API } from '@/lib/gateway'
 
 interface Patient {
   id: number; numeroDossier: string; nom: string; prenom: string
@@ -18,7 +19,7 @@ interface RendezVous {
   motif: string; type: string; statut: string; patientId: number
 }
 
-const API = process.env.NEXT_PUBLIC_API_URL
+const API = KINE_API
 
 function estExterne(p: Patient) {
   return (p.numeroDossier || '').startsWith('CHU-')

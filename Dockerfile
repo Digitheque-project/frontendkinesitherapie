@@ -10,6 +10,13 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+# Variables NEXT_PUBLIC_* : integrees au build par Next.js, elles doivent donc
+# etre declarees en ARG (l'hebergeur les transmet alors depuis son tableau de
+# bord). Une seule variable reseau : la passerelle du CHU (voir src/lib/gateway.ts).
+ARG NEXT_PUBLIC_GATEWAY_URL
+ARG NEXT_PUBLIC_LOGIN_URL
+ENV NEXT_PUBLIC_GATEWAY_URL=$NEXT_PUBLIC_GATEWAY_URL \
+    NEXT_PUBLIC_LOGIN_URL=$NEXT_PUBLIC_LOGIN_URL
 RUN npm run build
 
 # --- Étape 3 : image finale (production) ---

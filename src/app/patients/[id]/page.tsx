@@ -5,8 +5,9 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import AppShell from '@/components/layout/AppShell'
 import { getUtilisateurConnecte } from '@/lib/utilisateur'
+import { KINE_API } from '@/lib/gateway'
 
-const API = process.env.NEXT_PUBLIC_API_URL
+const API = KINE_API
 
 
 interface Patient {

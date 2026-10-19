@@ -1,5 +1,7 @@
+import { ACCUEIL_API } from '@/lib/gateway'
+import { getAuthToken } from '@/lib/auth-server'
 // Client pour le backend Accueil (identité des patients)
-// Base : ACCUEIL_API_URL (ex. https://acceuil-back-production.up.railway.app/accueil)
+// Base : passerelle du CHU + /accueil (voir lib/gateway.ts)
 // ⚠️ URL non exposée au navigateur : à utiliser uniquement côté serveur.
 
 export interface AccueilPatient {
@@ -17,16 +19,16 @@ export interface AccueilPatient {
 }
 
 export async function getAccueilPatient(id: string): Promise<AccueilPatient> {
-  // Le service Accueil exige un Bearer JWT : on l'ajoute s'il est configuré.
-  const token = process.env.ACCUEIL_API_TOKEN || process.env.PRESCRIPTION_API_TOKEN
-  const res = await fetch(`${process.env.ACCUEIL_API_URL}/patients/${id}`, {
+  // Le service Accueil exige un Bearer JWT : celui du medecin connecte.
+  const token = await getAuthToken()
+  const res = await fetch(`${ACCUEIL_API}/patients/${id}`, {
     cache: 'no-store',
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   })
   if (!res.ok) {
     if (res.status === 401) {
       throw new Error(
-        `Accueil : 401 — token JWT manquant/invalide (renseigner ACCUEIL_API_TOKEN)`,
+        `Accueil : 401 — session expiree, reconnectez-vous`,
       )
     }
     throw new Error(
