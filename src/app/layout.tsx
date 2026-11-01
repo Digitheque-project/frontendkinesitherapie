@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { LanguageProvider } from '@/context/LanguageContext'
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: 'CHU Andrainjato — Clinical Management',
@@ -22,6 +23,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="font-body-md text-on-surface bg-background min-h-screen">
         <LanguageProvider>{children}</LanguageProvider>
+      
+        {/* Messagerie du CHU : bulle en bas à droite (service-messagerie, via la passerelle). */}
+        {process.env.NEXT_PUBLIC_GATEWAY_URL ? (
+          <Script
+            src={`${process.env.NEXT_PUBLIC_GATEWAY_URL.replace(/\/+$/, "")}/messagerie/widget.js?auto`}
+            strategy="afterInteractive"
+          />
+        ) : null}
       </body>
     </html>
   )
