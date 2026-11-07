@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/context/LanguageContext'
 import { getUtilisateurConnecte } from '@/lib/utilisateur'
 import { KINE_API } from '@/lib/gateway'
+import PointServeur from "@/components/PointServeur";
 
 const API = KINE_API
 
@@ -275,7 +276,7 @@ export default function TopBar({
             <span className="text-sm font-bold text-primary">{utilisateur.initiales}</span>
           </div>
           <div className="text-right hidden md:block">
-            <p className="text-sm font-bold text-on-surface leading-none font-manrope">{'Kiné ' + utilisateur.displayName}</p>
+            <p className="text-sm font-bold text-on-surface leading-none font-manrope"><PointServeur />{'Kiné ' + utilisateur.displayName}</p>
           </div>
         </div>
       </div>
