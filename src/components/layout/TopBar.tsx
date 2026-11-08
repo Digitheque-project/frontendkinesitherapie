@@ -1,5 +1,6 @@
 'use client'
 
+import { PastilleAutresServices } from "@/components/ActionsCompte";
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/context/LanguageContext'
@@ -213,6 +214,7 @@ export default function TopBar({
         {actions}
 
 
+        <PastilleAutresServices />
         <div className="relative" ref={menuRef}>
           <button onClick={() => { setOpen((o) => !o); onBellClick?.() }} className="relative text-on-surface-variant hover:text-primary transition-colors">
             <span className="material-symbols-outlined">notifications</span>
