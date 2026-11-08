@@ -1,4 +1,5 @@
 'use client'
+import { ActionsCompte } from "@/components/ActionsCompte";
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -74,6 +75,7 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
         })}
       </nav>
       <div className="px-4 pb-6">
+        <ActionsCompte className="w-full flex items-center justify-center gap-2 p-3 mb-1 rounded-xl hover:bg-white/15 text-white font-semibold text-sm transition-colors" />
         <button
           onClick={() => setConfirmDeconnexion(true)}
           className="w-full flex items-center justify-center gap-2 p-3 rounded-xl bg-white/15 hover:bg-red-500 text-white font-semibold text-sm transition-colors"
