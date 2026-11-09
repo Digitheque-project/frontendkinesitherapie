@@ -6,6 +6,8 @@ import Sidebar from './Sidebar'
 import TopBar from './TopBar'
 import { LOGIN_URL, USER_API } from '@/lib/gateway'
 
+let tokenDejaVerifie: string | null = null
+
 interface AppShellProps {
   children: React.ReactNode
   searchPlaceholder?: string
@@ -43,7 +45,9 @@ function AppShellInner({
   topBarActions,
 }: AppShellProps) {
   const searchParams = useSearchParams()
-  const [checking, setChecking] = useState(true)
+  const [checking, setChecking] = useState(
+    () => !(typeof window !== 'undefined' && tokenDejaVerifie && tokenDejaVerifie === localStorage.getItem(TOKEN_KEY)),
+  )
   const [menuOuvert, setMenuOuvert] = useState(false)
   const [banniereVisible, setBanniereVisible] = useState(false)
   const [previewMode, setPreviewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop')
@@ -83,7 +87,8 @@ function AppShellInner({
       return
     }
 
-    if (!USER_API_URL) {
+    // Déjà vérifiée : changer de menu ne doit pas réafficher l'écran de vérification.
+    if (!USER_API_URL || tokenDejaVerifie === token) {
       setChecking(false)
       return
     }
@@ -96,6 +101,7 @@ function AppShellInner({
           deconnecter()
           return
         }
+        tokenDejaVerifie = token
         setChecking(false)
       })
       .catch(() => {
