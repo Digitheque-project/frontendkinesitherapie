@@ -105,13 +105,13 @@ export default function PatientsPage() {
     <AppShell searchPlaceholder={t('pat_rechercherPlaceholder')} showSearch={false}>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-on-surface font-manrope">{t('pat_titre')}</h2>
+          <h2 className="text-2xl font-black text-[#004A66] tracking-tight">{t('pat_titre')}</h2>
           <p className="text-sm text-on-surface-variant mt-1">{nbActifs} {t('pat_enregistres')}</p>
         </div>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <div className="flex items-center gap-3 bg-surface border border-outline-variant px-4 py-2 rounded-lg flex-1 max-w-md">
+        <div className="flex items-center gap-3 bg-surface border border-outline-variant px-4 py-2 rounded-xl flex-1 max-w-md">
           <span className="material-symbols-outlined text-on-surface-variant text-lg">search</span>
           <input type="text" placeholder={t('pat_rechercherPlaceholder')} value={search}
             onChange={e => setSearch(e.target.value)}
@@ -125,11 +125,11 @@ export default function PatientsPage() {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="py-12 text-center text-on-surface-variant bg-surface rounded-xl border border-outline-variant">
+        <div className="py-12 text-center text-on-surface-variant bg-white rounded-2xl border border-[#F1F5F9]">
           <span className="material-symbols-outlined text-4xl mb-2">search_off</span>
           <p className="mb-4">{t('pat_aucunTrouve')}</p>
           <button onClick={() => setSearch('')}
-            className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:opacity-90">
+            className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-[#005a76]">
             {t('pat_voirTousPatients')}
           </button>
         </div>
@@ -138,10 +138,10 @@ export default function PatientsPage() {
           {filtered.map(p => {
             const rdv = rdvDuPatient(p.id)
             return (
-              <div key={p.id} className="bg-green-50/90 rounded-xl border border-green-500/60 border-l-[5px] border-l-green-600/50 shadow-sm p-4">
+              <div key={p.id} className="bg-white rounded-2xl border border-[#F1F5F9] border-l-[5px] border-l-[#006A8C]/60 shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-4">
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-0">
                   <div className="min-w-0 md:w-52 md:flex-shrink-0">
-                    <p className="font-semibold text-on-surface">{p.prenom} {p.nom}</p>
+                    <p className="font-bold text-[#0F172A]">{p.prenom} {p.nom}</p>
                     <p className="text-xs text-on-surface-variant">
                       {p.dateNaissance} {p.sexe ? '- ' + (p.sexe === 'M' ? t('cal_homme') : t('cal_femme')) : ''}
                     </p>
@@ -155,21 +155,21 @@ export default function PatientsPage() {
 
                   <div className="md:flex-shrink-0">
                     <button onClick={() => setDetailsPatient(p)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-semibold hover:bg-primary/20 transition-colors">
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-primary/10 text-primary text-xs font-semibold hover:bg-primary/20 transition-colors">
                       Détails
                       <span className="material-symbols-outlined text-sm">visibility</span>
                     </button>
                   </div>
 
                   <div className="md:flex-shrink-0 md:w-32">
-                    <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wide">Dernière visite</p>
+                    <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Dernière visite</p>
                     <p className="text-xs text-on-surface-variant">{p.dateDerniereVisite || '-'}</p>
                   </div>
 
                   <div className="relative md:flex-shrink-0">
                     <button
                       onClick={() => setMenuOpen(menuOpen === p.id ? null : p.id)}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:opacity-90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-[#005a76] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       Action
                       <span className="material-symbols-outlined text-sm">expand_more</span>
@@ -178,7 +178,7 @@ export default function PatientsPage() {
                     {menuOpen === p.id && (
                       <>
                         <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(null)} />
-                        <div className="absolute right-0 z-50 mt-1 w-52 bg-surface rounded-lg border border-outline-variant shadow-xl overflow-hidden text-left">
+                        <div className="absolute right-0 z-50 mt-1 w-52 bg-white rounded-2xl border border-[#F1F5F9] shadow-xl overflow-hidden text-left">
                           {rdv ? (
                             <>
                               <button onClick={() => commencer(rdv)}
@@ -208,32 +208,32 @@ export default function PatientsPage() {
 
       {decalerRdv && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-surface rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4">
+          <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-2xl p-6 max-w-sm w-full mx-4">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center">
                 <span className="material-symbols-outlined text-amber-600">event_repeat</span>
               </div>
-              <h3 className="text-lg font-bold text-on-surface">Décaler le RDV</h3>
+              <h3 className="text-lg font-black text-[#004A66]">Décaler le RDV</h3>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-xs font-semibold text-on-surface-variant mb-1 block">Date</label>
                 <input type="date" value={dDate} onChange={e => setDDate(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-outline-variant text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                  className="w-full px-3 py-2 rounded-xl border border-outline-variant text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-[#006A8C]/20" />
               </div>
               <div>
                 <label className="text-xs font-semibold text-on-surface-variant mb-1 block">Heure</label>
                 <input type="time" value={dHeure} onChange={e => setDHeure(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-outline-variant text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                  className="w-full px-3 py-2 rounded-xl border border-outline-variant text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-[#006A8C]/20" />
               </div>
             </div>
             <div className="flex gap-3 mt-6">
               <button onClick={() => setDecalerRdv(null)}
-                className="flex-1 px-4 py-2.5 rounded-lg border border-outline-variant text-on-surface font-semibold text-sm hover:bg-surface-container-low">
+                className="flex-1 px-4 py-2.5 rounded-xl border border-outline-variant text-on-surface font-semibold text-sm hover:bg-surface-container-low">
                 Annuler
               </button>
               <button onClick={confirmerDecaler}
-                className="flex-1 px-4 py-2.5 rounded-lg bg-primary text-white font-semibold text-sm hover:opacity-90 shadow-sm">
+                className="flex-1 px-4 py-2.5 rounded-xl bg-primary text-white font-semibold text-sm hover:bg-[#005a76] shadow-sm">
                 Confirmer
               </button>
             </div>
@@ -243,9 +243,9 @@ export default function PatientsPage() {
 
       {detailsPatient && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-green-50/90 rounded-2xl shadow-2xl p-6 max-w-lg w-full mx-4 max-h-[85vh] overflow-y-auto border border-green-500">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-lg w-full mx-4 max-h-[85vh] overflow-y-auto border border-[#F1F5F9]">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-on-surface flex items-center gap-2">
+              <h3 className="text-lg font-black text-[#004A66] flex items-center gap-2">
                 <span className="material-symbols-outlined text-blue-500">description</span>
                 Détails de la prescription
               </h3>
@@ -255,31 +255,31 @@ export default function PatientsPage() {
             </div>
             <div className="space-y-4">
               <div>
-                <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Urgence</p>
+                <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Urgence</p>
                 <p className="text-sm text-on-surface">{detailsPatient.urgence || 'Non renseigné'}</p>
               </div>
               <div>
-                <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Alertes</p>
+                <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Alertes</p>
                 <p className="text-sm text-on-surface">{detailsPatient.alertes || 'Aucune'}</p>
               </div>
               <div>
-                <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Renseignements</p>
+                <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Renseignements</p>
                 <p className="text-sm text-on-surface">{detailsPatient.antecedents || 'Non renseigné'}</p>
               </div>
               <div>
-                <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Diagnostic</p>
+                <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Diagnostic</p>
                 <p className="text-sm text-on-surface">{detailsPatient.diagnostic || 'Non renseigné'}</p>
               </div>
               <div>
-                <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Objectifs</p>
+                <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Objectifs</p>
                 <p className="text-sm text-on-surface">{detailsPatient.objectifs || 'Non renseigné'}</p>
               </div>
               <div>
-                <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Remarques</p>
+                <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Remarques</p>
                 <p className="text-sm text-on-surface">{detailsPatient.remarques || 'Aucune'}</p>
               </div>
               <div>
-                <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Médecin prescripteur</p>
+                <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider mb-1">Médecin prescripteur</p>
                 <p className="text-sm text-on-surface">{detailsPatient.nomMedecinPrescripteur || 'Non renseigné'}</p>
               </div>
             </div>

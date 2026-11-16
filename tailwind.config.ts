@@ -74,8 +74,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        body: ['Inter', 'system-ui', 'sans-serif'],
-        manrope: ['Manrope', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-sans)', 'Manrope', 'system-ui', 'sans-serif'],
+        body: ['var(--font-sans)', 'Manrope', 'system-ui', 'sans-serif'],
+        manrope: ['var(--font-sans)', 'Manrope', 'system-ui', 'sans-serif'],
       },
     },
   },

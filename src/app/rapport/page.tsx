@@ -339,35 +339,35 @@ export default function RapportPage() {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <span className="material-symbols-outlined text-primary text-2xl">assessment</span>
-            <h2 className="text-2xl font-bold text-on-surface font-manrope">Rapport d'activité</h2>
+            <h2 className="text-2xl font-black text-[#004A66] tracking-tight">Rapport d'activité</h2>
           </div>
           <p className="text-sm text-on-surface-variant">Consultation uniquement — lecture seule</p>
         </div>
         <button onClick={() => window.print()}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white font-semibold text-sm shadow hover:opacity-90 transition print:hidden">
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white font-bold text-sm shadow-sm hover:bg-[#005a76] transition print:hidden">
           <span className="material-symbols-outlined text-sm">print</span>
           Imprimer / PDF
         </button>
       </div>
 
       <div className="flex flex-wrap items-center gap-3 mb-6 print:hidden">
-        <div className="flex rounded-xl border border-outline-variant overflow-hidden text-sm">
+        <div className="flex rounded-xl border border-[#E2E8F0] bg-white overflow-hidden text-sm">
           {(['jour','semaine','mois','annee'] as Periode[]).map(p => (
             <button key={p} onClick={() => setPeriode(p)}
-              className={'px-4 py-2 font-semibold transition-colors capitalize ' + (periode===p?'bg-primary text-white':'text-on-surface-variant hover:bg-surface-container-low')}>
+              className={'px-4 py-2 font-semibold transition-colors capitalize ' + (periode===p?'bg-[#006A8C] text-white font-bold':'text-[#475569] hover:bg-gray-50')}>
               {p==='jour'?'Jour':p==='semaine'?'Semaine':p==='mois'?'Mois':'Année'}
             </button>
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => navigate(-1)} className="w-9 h-9 rounded-lg border border-outline-variant flex items-center justify-center hover:bg-surface-container-low transition">
+          <button onClick={() => navigate(-1)} className="w-9 h-9 rounded-xl border border-outline-variant flex items-center justify-center hover:bg-surface-container-low transition">
             <span className="material-symbols-outlined text-sm">chevron_left</span>
           </button>
           <span className="text-sm font-semibold text-on-surface px-2 capitalize">{label}</span>
-          <button onClick={() => navigate(1)} className="w-9 h-9 rounded-lg border border-outline-variant flex items-center justify-center hover:bg-surface-container-low transition">
+          <button onClick={() => navigate(1)} className="w-9 h-9 rounded-xl border border-outline-variant flex items-center justify-center hover:bg-surface-container-low transition">
             <span className="material-symbols-outlined text-sm">chevron_right</span>
           </button>
-          <button onClick={() => setRefDate(new Date())} className="px-3 py-1.5 rounded-lg border border-outline-variant text-xs font-semibold text-on-surface-variant hover:bg-surface-container-low transition">
+          <button onClick={() => setRefDate(new Date())} className="px-3 py-1.5 rounded-xl border border-outline-variant text-xs font-semibold text-on-surface-variant hover:bg-surface-container-low transition">
             Aujourd'hui
           </button>
         </div>
@@ -388,20 +388,20 @@ export default function RapportPage() {
             { icon: 'man',          label: 'Hommes',      value: stats.hommes,     color: 'text-blue-600',    bg: 'bg-blue-50' },
             { icon: 'woman',        label: 'Femmes',      value: stats.femmes,     color: 'text-pink-600',    bg: 'bg-pink-50' },
           ].map(s => (
-            <div key={s.label} className={'rounded-xl border border-outline-variant p-5 flex flex-col gap-2 ' + s.bg}>
+            <div key={s.label} className={'bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-5 flex flex-col gap-2 '}>
               <div className="flex items-center gap-2">
                 <span className={'material-symbols-outlined text-lg ' + s.color}>{s.icon}</span>
-                <span className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">{s.label}</span>
+                <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">{s.label}</span>
               </div>
-              <p className={'text-3xl font-bold ' + s.color}>{s.value}</p>
+              <p className={'text-3xl font-black ' + s.color}>{s.value}</p>
             </div>
           ))}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
-          <div className="rounded-xl border border-outline-variant p-5 bg-surface lg:col-span-2">
-            <p className="text-sm font-bold text-on-surface mb-4 flex items-center gap-2">
+          <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-5 lg:col-span-2">
+            <p className="text-base font-black text-[#0F172A] mb-4 flex items-center gap-2">
               <span className="material-symbols-outlined text-base text-primary">show_chart</span>
               Évolution rendez-vous / séances effectuées
             </p>
@@ -415,8 +415,8 @@ export default function RapportPage() {
             )}
           </div>
 
-          <div className="rounded-xl border border-outline-variant p-5 bg-surface">
-            <p className="text-sm font-bold text-on-surface mb-4 flex items-center gap-2">
+          <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-5">
+            <p className="text-base font-black text-[#0F172A] mb-4 flex items-center gap-2">
               <span className="material-symbols-outlined text-base text-primary">donut_large</span>
               Répartition des rendez-vous
             </p>
@@ -430,8 +430,8 @@ export default function RapportPage() {
             )}
           </div>
 
-          <div className="rounded-xl border border-outline-variant p-5 bg-surface lg:col-span-2">
-            <p className="text-sm font-bold text-on-surface mb-4 flex items-center gap-2">
+          <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-5 lg:col-span-2">
+            <p className="text-base font-black text-[#0F172A] mb-4 flex items-center gap-2">
               <span className="material-symbols-outlined text-base text-primary">wc</span>
               Répartition Hommes / Femmes (patients vus)
             </p>

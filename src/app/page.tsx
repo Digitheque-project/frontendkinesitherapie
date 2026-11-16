@@ -110,7 +110,7 @@ export default function DashboardPage() {
     <AppShell showSearch={false}>
       {/* EN-TETE */}
       <div className="mb-2">
-        <h2 className="text-3xl font-extrabold text-on-surface tracking-tight">
+        <h2 className="text-3xl font-black text-[#004A66] tracking-tight">
           {'Bonjour, Kiné ' + nomUtilisateur + ' \u{1F60A}'}
         </h2>
         <p className="font-body-lg text-on-surface-variant mt-0.5">
@@ -121,10 +121,10 @@ export default function DashboardPage() {
       {/* CARTES STATISTIQUES AUTOMATIQUES */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-3">
         {/* Patients (3 niveaux) */}
-        <div className="bg-sky-50 rounded-xl border-[3px] border-sky-600 shadow-sm p-5">
+        <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-5">
           <div className="flex items-center justify-between">
-            <p className="text-lg font-bold text-black">Répartition des patients</p>
-            <span className="text-lg font-extrabold text-black tabular-nums">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">Répartition des patients</p>
+            <span className="text-2xl font-black text-[#0F172A] tabular-nums">
               {stats.tresUrgent + stats.urgent + stats.normal}
             </span>
           </div>
@@ -143,38 +143,38 @@ export default function DashboardPage() {
         </div>
 
         {/* Consultation interne */}
-        <div className="bg-teal-50 rounded-xl border-[3px] border-green-600 shadow-sm p-5">
+        <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-5">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-teal-700">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
               Consultation interne
             </p>
             <span className="material-symbols-outlined text-teal-600">
               home_health
             </span>
           </div>
-          <p className="text-4xl font-extrabold text-teal-700 mt-2 tabular-nums">
+          <p className="text-4xl font-black text-[#006A8C] mt-2 tabular-nums">
             {stats.interne}
           </p>
         </div>
 
         {/* Consultation externe */}
-        <div className="bg-indigo-50 rounded-xl border-[3px] border-indigo-700 shadow-sm p-5">
+        <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-5">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-indigo-700">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
               Consultation externe
             </p>
             <span className="material-symbols-outlined text-indigo-600">
               e911_emergency
             </span>
           </div>
-          <p className="text-4xl font-extrabold text-indigo-700 mt-2 tabular-nums">
+          <p className="text-4xl font-black text-indigo-700 mt-2 tabular-nums">
             {stats.externe}
           </p>
         </div>
       </div>
 
       {/* BARRE DE RECHERCHE */}
-      <div className="flex items-center gap-3 bg-surface-container-low px-4 py-2.5 rounded-full w-full max-w-md mb-4 border border-outline-variant">
+      <div className="flex items-center gap-3 bg-white px-4 py-2.5 rounded-xl w-full max-w-md mb-4 border border-[#E2E8F0] focus-within:ring-2 focus-within:ring-[#006A8C]/20">
         <span className="material-symbols-outlined text-on-surface-variant text-base">search</span>
         <input
           type="text"
@@ -186,17 +186,17 @@ export default function DashboardPage() {
       </div>
 
       {/* RDV DU JOUR (données réelles) */}
-      <div className="bg-surface rounded-xl border-[3px] border-outline-variant shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low/50">
+      <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] overflow-hidden">
+        <div className="px-6 py-4 border-b border-[#F1F5F9] flex justify-between items-center bg-white">
           <div className="flex items-center gap-2">
-            <h4 className="font-title-sm text-on-surface">{t('dash_rdvDuJour')}</h4>
+            <h4 className="text-base font-black text-[#0F172A]">{t('dash_rdvDuJour')}</h4>
             <span className="bg-primary text-white text-xs font-bold rounded-full px-2.5 py-0.5">
               {stats.rdvAujourdhui}
             </span>
           </div>
           <Link
             href="/calendrier"
-            className="text-primary font-semibold text-sm hover:underline"
+            className="text-[#006A8C] font-bold text-sm hover:underline"
           >
             {t('dash_voirTout')}
           </Link>
@@ -206,7 +206,7 @@ export default function DashboardPage() {
             {recherche ? 'Aucun résultat pour cette recherche.' : 'Aucun rendez-vous aujourd\'hui.'}
           </div>
         ) : (
-          <div className="divide-y divide-outline-variant max-h-[38vh] overflow-y-auto">
+          <div className="divide-y divide-[#F1F5F9] max-h-[38vh] overflow-y-auto">
             {listeFiltree.map((rdv) => (
               <Link
                 key={rdv.id}
@@ -225,7 +225,7 @@ export default function DashboardPage() {
                 <p className="font-semibold text-on-surface flex-shrink-0">
                   {rdv.patient
                     ? `${rdv.patient.prenom} ${rdv.patient.nom}`
-                    : `Patient #${rdv.patientId}`}
+                    : 'Patient non identifié'}
                 </p>
                 <p className="text-sm text-on-surface-variant truncate flex-1">
                   {rdv.motif}

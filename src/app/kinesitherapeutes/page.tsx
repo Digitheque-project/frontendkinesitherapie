@@ -36,17 +36,17 @@ export default function KinesitherapeutesPage() {
     <AppShell searchPlaceholder="Rechercher un kinésithérapeute..." showSearch={false}>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-on-surface font-manrope">Kinésithérapeutes</h2>
+          <h2 className="text-2xl font-black text-[#004A66] tracking-tight">Kinésithérapeutes</h2>
           <p className="text-sm text-on-surface-variant mt-1">{MOCK_KINES.length} praticiens enregistrés</p>
         </div>
         <button className="btn-primary"><span className="material-symbols-outlined text-lg">person_add</span>Nouveau praticien</button>
       </div>
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <div className="flex items-center gap-3 bg-white border border-slate-200 px-4 py-2 rounded-lg flex-1 max-w-md">
+        <div className="flex items-center gap-3 bg-white border border-slate-200 px-4 py-2 rounded-xl flex-1 max-w-md">
           <span className="material-symbols-outlined text-slate-400 text-lg">search</span>
           <input type="text" placeholder="Rechercher par nom, spécialité..." value={search} onChange={(e) => setSearch(e.target.value)} className="bg-transparent border-none focus:outline-none text-sm w-full text-on-surface placeholder:text-slate-400" />
         </div>
-        <select value={filterStatut} onChange={(e) => setFilterStatut(e.target.value as Kinesitherapeute['statut'] | 'tous')} className="px-4 py-2 rounded-lg border border-slate-200 bg-white text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30">
+        <select value={filterStatut} onChange={(e) => setFilterStatut(e.target.value as Kinesitherapeute['statut'] | 'tous')} className="px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-[#006A8C]/20">
           <option value="tous">Tous les statuts</option>
           <option value="disponible">Disponible</option>
           <option value="occupe">Occupé(e)</option>

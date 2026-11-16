@@ -55,6 +55,7 @@ export default function CalendrierPage() {
   const DAYS_SHORT = [t('cal_lun'),t('cal_mar'),t('cal_mer'),t('cal_jeu'),t('cal_ven'),t('cal_sam'),t('cal_dim')]
   const MONTHS = [t('cal_janvier'),t('cal_fevrier'),t('cal_mars'),t('cal_avril'),t('cal_mai'),t('cal_juin'),t('cal_juillet'),t('cal_aout'),t('cal_septembre'),t('cal_octobre'),t('cal_novembre'),t('cal_decembre')]
 
+  const [menuOuvert, setMenuOuvert]   = useState(false)
   const [view, setView]               = useState<View>('semaine')
   const [current, setCurrent]         = useState(new Date())
   const [drawerOpen, setDrawerOpen]   = useState(false)
@@ -140,27 +141,27 @@ r.patient.nom : '-'
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
-      <Sidebar />
-      <div className="flex-1 ml-64 flex flex-col h-screen overflow-hidden">
-        <TopBar showSearch={false} />
-        <div className="flex flex-1 overflow-hidden">
+    <div className="flex h-screen flex-col overflow-hidden bg-[#F8F9FB]">
+      <TopBar showSearch={false} onMenuClick={() => setMenuOuvert(true)} />
+      <div className="flex flex-1 overflow-hidden min-w-0">
+        <Sidebar open={menuOuvert} onClose={() => setMenuOuvert(false)} />
+        <div className="flex flex-1 overflow-hidden min-w-0">
           <section className="flex-1 flex flex-col overflow-hidden">
 
-            <div className="flex-shrink-0 bg-emerald-50 shadow-sm border-b border-outline-variant px-6 py-3 flex justify-between items-center">
+            <div className="flex-shrink-0 bg-white border-b border-[#F1F5F9] px-6 py-3 flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <button onClick={() => navigate(-1)} className="w-8 h-8 rounded-lg border border-outline-variant flex items-center justify-center hover:bg-surface-container-low transition-colors">
+                <button onClick={() => navigate(-1)} className="w-8 h-8 rounded-xl border border-outline-variant flex items-center justify-center hover:bg-surface-container-low transition-colors">
                   <span className="material-symbols-outlined text-sm">chevron_left</span>
                 </button>
-                <h3 className="font-semibold text-on-surface px-2 text-sm">{title}</h3>
-                <button onClick={() => navigate(1)} className="w-8 h-8 rounded-lg border border-outline-variant flex items-center justify-center hover:bg-surface-container-low transition-colors">
+                <h3 className="font-black text-[#004A66] px-2 text-sm">{title}</h3>
+                <button onClick={() => navigate(1)} className="w-8 h-8 rounded-xl border border-outline-variant flex items-center justify-center hover:bg-surface-container-low transition-colors">
                   <span className="material-symbols-outlined text-sm">chevron_right</span>
                 </button>
               </div>
-              <div className="flex rounded-lg border border-outline-variant overflow-hidden text-sm shadow-sm">
+              <div className="flex rounded-xl border border-[#E2E8F0] bg-white overflow-hidden text-sm">
                 {(['jour','semaine','mois'] as View[]).map((v) => (
                   <button key={v} onClick={() => setView(v)}
-                    className={'px-3 py-1.5 font-semibold transition-colors capitalize ' + (view===v?'bg-primary text-white':'text-on-surface-variant hover:bg-surface-container-low')}>
+                    className={'px-3 py-1.5 font-semibold transition-colors capitalize ' + (view===v?'bg-[#006A8C] text-white font-bold':'text-[#475569] hover:bg-gray-50')}>
                     {v==='jour'?t('cal_jour'):v==='semaine'?t('cal_semaine'):t('cal_mois')}
                   </button>
                 ))}
@@ -345,7 +346,7 @@ r.patient.nom : '-'
                         {(selectedPatient.statut||'').toUpperCase()}
                       </span>
                       <span className="text-on-surface-variant text-xs">•</span>
-                      <span className="text-on-surface-variant text-xs">{selectedPatient.numeroDossier || 'ID: #' + selectedPatient.id}</span>
+                      <span className="text-on-surface-variant text-xs">{selectedPatient.numeroDossier || ''}</span>
                     </div>
                   </div>
 

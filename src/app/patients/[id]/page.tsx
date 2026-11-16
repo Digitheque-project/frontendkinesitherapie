@@ -45,14 +45,14 @@ function SectionSaisie({ label, icon, value, onChange, bgClass, borderClass, tit
   locked?: boolean
 }) {
   return (
-    <div className={'rounded-xl shadow-sm border p-6 ' + bgClass + ' ' + borderClass}>
-      <h3 className={'font-headline-md flex items-center gap-2 mb-4 ' + titleColor}>
-        <span className="material-symbols-outlined">{icon}</span>
+    <div className={'bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-6 '}>
+      <h3 className="text-base font-black text-[#0F172A] flex items-center gap-2 mb-4">
+        <span className={'material-symbols-outlined ' + titleColor}>{icon}</span>
         {label}
-        {locked && <span className="ml-auto text-xs bg-white/60 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1"><span className="material-symbols-outlined text-sm">lock</span>Valide</span>}
+        {locked && <span className="ml-auto text-xs bg-[#F0F7FF] text-[#006A8C] px-2 py-0.5 rounded-full font-semibold flex items-center gap-1"><span className="material-symbols-outlined text-sm">lock</span>Valide</span>}
       </h3>
       <textarea value={value} onChange={e => !locked && onChange(e.target.value)} rows={3} disabled={locked}
-        className={'w-full p-4 rounded-lg border text-sm resize-none outline-none ' + (locked ? 'bg-white/40 border-white/30 cursor-not-allowed' : 'bg-white/70 border-white/50 focus:border-white focus:ring-1 focus:ring-white/80')}
+        className={'w-full p-4 rounded-xl border text-sm resize-none outline-none ' + (locked ? 'bg-[#F8F9FB] border-[#E2E8F0] text-[#64748B] cursor-not-allowed' : 'bg-white border-[#E2E8F0] focus:border-[#006A8C] focus:ring-2 focus:ring-[#006A8C]/20')}
         placeholder={'Saisir ' + label.toLowerCase() + '...'} />
     </div>
   )
@@ -270,7 +270,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
         </div>
       )}
 
-      <section className="relative bg-gradient-to-r from-teal-600 to-teal-400 rounded-2xl shadow-lg p-6 mb-6 text-white">
+      <section className="relative bg-gradient-to-r from-[#004A66] to-[#006A8C] rounded-2xl shadow-sm p-6 mb-6 text-white">
         <button onClick={() => setShowHistorique(true)}
           className="absolute -top-3 right-6 flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm px-4 py-2 rounded-full shadow-lg border-2 border-white transition-all">
           <span className="material-symbols-outlined text-base">history</span>
@@ -283,13 +283,13 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
         <div className="flex items-start gap-8">
           <div className="relative flex-shrink-0">
             <div className="w-28 h-28 rounded-xl bg-white/20 flex items-center justify-center border-2 border-white/40">
-              <span className="text-4xl font-bold text-white font-manrope">{initials}</span>
+              <span className="text-4xl font-bold text-white ">{initials}</span>
             </div>
           </div>
           <div className="flex-1">
             <div className="flex justify-between items-start">
               <div>
-                <h2 className="text-3xl font-bold text-white font-manrope">{nomComplet}</h2>
+                <h2 className="text-3xl font-bold text-white ">{nomComplet}</h2>
                 <p className="text-teal-100 font-medium mt-1">{patient.sexe === 'M' ? 'Homme' : 'Femme'}</p>
               </div>
               <span className={'px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ' + (patient.statut==='actif'?'bg-emerald-400 text-white':patient.statut==='archive'?'bg-red-400 text-white':patient.statut==='en_attente'?'bg-amber-400 text-white':'bg-white/30 text-white')}>{patient.statut}</span>
@@ -304,7 +304,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
                 <p className="text-xs font-semibold text-teal-100 uppercase tracking-widest">Religion</p>
                 {!valide ? (
                   <input type="text" value={religion} onChange={e => handleReligionChange(e.target.value)} 
-                    className="mt-1 w-full bg-white/20 border border-white/30 rounded-lg px-2 py-1 text-sm text-white placeholder-white/50 focus:outline-none focus:border-white" />
+                    className="mt-1 w-full bg-white/20 border border-white/30 rounded-xl px-2 py-1 text-sm text-white placeholder-white/50 focus:outline-none focus:border-white" />
                 ) : <p className="text-sm font-bold text-white mt-1">{religion || '—'}</p>}
               </div>
               <div>
@@ -322,8 +322,8 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
 
       <div className="space-y-6">
 
-        <div className="rounded-xl shadow-sm border bg-teal-50 border-teal-200 p-6">
-          <h3 className="font-headline-md text-teal-800 flex items-center gap-2 mb-5">
+        <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-6">
+          <h3 className="text-base font-black text-[#0F172A] flex items-center gap-2 mb-5">
             <span className="material-symbols-outlined text-teal-600">today</span>
             Seance du jour
             {valide && <span className="ml-auto text-xs bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1"><span className="material-symbols-outlined text-sm">lock</span>Valide</span>}
@@ -355,24 +355,24 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
           </div>
         </div>
 
-        <div className="rounded-xl shadow-sm border bg-yellow-50 border-yellow-200 p-6">
-          <h3 className="font-headline-md text-yellow-800 flex items-center gap-2 mb-5"><span className="material-symbols-outlined text-yellow-600">flag</span>Objectif presempteur</h3>
-          <textarea value={objectif} onChange={e => !valide && setObjectif(e.target.value)} rows={3} disabled={valide} className={'w-full p-3 rounded-lg border text-sm resize-none outline-none ' + (valide ? 'bg-yellow-100/50 border-yellow-200 cursor-not-allowed' : 'bg-white border-yellow-200 focus:border-yellow-400')} placeholder="Decrire objectif therapeutique presempteur..." />
+        <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-6">
+          <h3 className="text-base font-black text-[#0F172A] flex items-center gap-2 mb-5"><span className="material-symbols-outlined text-yellow-600">flag</span>Objectif presempteur</h3>
+          <textarea value={objectif} onChange={e => !valide && setObjectif(e.target.value)} rows={3} disabled={valide} className={'w-full p-3 rounded-xl border text-sm resize-none outline-none ' + (valide ? 'bg-[#F8F9FB] border-[#E2E8F0] text-[#64748B] cursor-not-allowed' : 'bg-white border-[#E2E8F0] focus:border-[#006A8C] focus:ring-2 focus:ring-[#006A8C]/20')} placeholder="Decrire objectif therapeutique presempteur..." />
         </div>
 
-        <div className="rounded-xl shadow-sm border bg-purple-50 border-purple-200 p-6">
-          <h3 className="font-headline-md text-purple-800 flex items-center gap-2 mb-5"><span className="material-symbols-outlined text-purple-600">fact_check</span>Bilan kinesitherapique</h3>
+        <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-6">
+          <h3 className="text-base font-black text-[#0F172A] flex items-center gap-2 mb-5"><span className="material-symbols-outlined text-purple-600">fact_check</span>Bilan kinesitherapique</h3>
           <div className="space-y-4">
-            <div><label className="text-xs font-bold text-purple-600 uppercase tracking-widest block mb-1">Antecedents</label><textarea value={antecedents} onChange={e => !valide && setAntecedents(e.target.value)} rows={3} disabled={valide} className={'w-full p-3 rounded-lg border text-sm resize-none outline-none ' + (valide ? 'bg-purple-100/50 border-purple-200 cursor-not-allowed' : 'bg-white border-purple-200 focus:border-purple-400')} placeholder="Antecedents medicaux, chirurgicaux, familiaux..." /></div>
-            <div><label className="text-xs font-bold text-purple-600 uppercase tracking-widest block mb-1">Histoire de la maladie</label><textarea value={historieMaladie} onChange={e => !valide && setHistorieMaladie(e.target.value)} rows={3} disabled={valide} className={'w-full p-3 rounded-lg border text-sm resize-none outline-none ' + (valide ? 'bg-purple-100/50 border-purple-200 cursor-not-allowed' : 'bg-white border-purple-200 focus:border-purple-400')} placeholder="Decrire evolution de la maladie depuis le debut..." /></div>
-            <div><label className="text-xs font-bold text-purple-600 uppercase tracking-widest block mb-1">Bilan fonctionnel</label><textarea value={bilanFonctionnel} onChange={e => !valide && setBilanFonctionnel(e.target.value)} rows={3} disabled={valide} className={'w-full p-3 rounded-lg border text-sm resize-none outline-none ' + (valide ? 'bg-purple-100/50 border-purple-200 cursor-not-allowed' : 'bg-white border-purple-200 focus:border-purple-400')} placeholder="Evaluation des capacites fonctionnelles du patient..." /></div>
-            <div><label className="text-xs font-bold text-purple-600 uppercase tracking-widest block mb-1">Bilan incapacite</label><textarea value={bilanIncapacite} onChange={e => !valide && setBilanIncapacite(e.target.value)} rows={3} disabled={valide} className={'w-full p-3 rounded-lg border text-sm resize-none outline-none ' + (valide ? 'bg-purple-100/50 border-purple-200 cursor-not-allowed' : 'bg-white border-purple-200 focus:border-purple-400')} placeholder="Evaluation des incapacites et limitations..." /></div>
+            <div><label className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider block mb-1">Antecedents</label><textarea value={antecedents} onChange={e => !valide && setAntecedents(e.target.value)} rows={3} disabled={valide} className={'w-full p-3 rounded-xl border text-sm resize-none outline-none ' + (valide ? 'bg-[#F8F9FB] border-[#E2E8F0] text-[#64748B] cursor-not-allowed' : 'bg-white border-[#E2E8F0] focus:border-[#006A8C] focus:ring-2 focus:ring-[#006A8C]/20')} placeholder="Antecedents medicaux, chirurgicaux, familiaux..." /></div>
+            <div><label className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider block mb-1">Histoire de la maladie</label><textarea value={historieMaladie} onChange={e => !valide && setHistorieMaladie(e.target.value)} rows={3} disabled={valide} className={'w-full p-3 rounded-xl border text-sm resize-none outline-none ' + (valide ? 'bg-[#F8F9FB] border-[#E2E8F0] text-[#64748B] cursor-not-allowed' : 'bg-white border-[#E2E8F0] focus:border-[#006A8C] focus:ring-2 focus:ring-[#006A8C]/20')} placeholder="Decrire evolution de la maladie depuis le debut..." /></div>
+            <div><label className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider block mb-1">Bilan fonctionnel</label><textarea value={bilanFonctionnel} onChange={e => !valide && setBilanFonctionnel(e.target.value)} rows={3} disabled={valide} className={'w-full p-3 rounded-xl border text-sm resize-none outline-none ' + (valide ? 'bg-[#F8F9FB] border-[#E2E8F0] text-[#64748B] cursor-not-allowed' : 'bg-white border-[#E2E8F0] focus:border-[#006A8C] focus:ring-2 focus:ring-[#006A8C]/20')} placeholder="Evaluation des capacites fonctionnelles du patient..." /></div>
+            <div><label className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider block mb-1">Bilan incapacite</label><textarea value={bilanIncapacite} onChange={e => !valide && setBilanIncapacite(e.target.value)} rows={3} disabled={valide} className={'w-full p-3 rounded-xl border text-sm resize-none outline-none ' + (valide ? 'bg-[#F8F9FB] border-[#E2E8F0] text-[#64748B] cursor-not-allowed' : 'bg-white border-[#E2E8F0] focus:border-[#006A8C] focus:ring-2 focus:ring-[#006A8C]/20')} placeholder="Evaluation des incapacites et limitations..." /></div>
           </div>
         </div>
 
-        <div className="rounded-xl shadow-sm border bg-blue-50 border-blue-200 p-6">
-          <h3 className="font-headline-md text-blue-800 flex items-center gap-2 mb-5"><span className="material-symbols-outlined text-blue-600">diagnosis</span>Diagnostic kinesitherapique</h3>
-          <textarea value={diagnosticKine} onChange={e => !valide && setDiagnosticKine(e.target.value)} rows={3} disabled={valide} className={'w-full p-3 rounded-lg border text-sm resize-none outline-none ' + (valide ? 'bg-blue-100/50 border-blue-200 cursor-not-allowed' : 'bg-white border-blue-200 focus:border-blue-400')} placeholder="Diagnostic etabli par le kinesitherapeute..." />
+        <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-6">
+          <h3 className="text-base font-black text-[#0F172A] flex items-center gap-2 mb-5"><span className="material-symbols-outlined text-blue-600">diagnosis</span>Diagnostic kinesitherapique</h3>
+          <textarea value={diagnosticKine} onChange={e => !valide && setDiagnosticKine(e.target.value)} rows={3} disabled={valide} className={'w-full p-3 rounded-xl border text-sm resize-none outline-none ' + (valide ? 'bg-[#F8F9FB] border-[#E2E8F0] text-[#64748B] cursor-not-allowed' : 'bg-white border-[#E2E8F0] focus:border-[#006A8C] focus:ring-2 focus:ring-[#006A8C]/20')} placeholder="Diagnostic etabli par le kinesitherapeute..." />
         </div>
 
         <SectionSaisie label="Traitement" icon="vaccines"
@@ -387,8 +387,8 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
           value={conseil} onChange={setConseil}
           bgClass="bg-amber-50" borderClass="border-amber-200" titleColor="text-amber-800" locked={valide} />
 
-        <div className="rounded-xl shadow-sm border bg-teal-50 border-teal-200 p-6">
-          <h3 className="font-headline-md text-teal-800 flex items-center gap-2 mb-4">
+        <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-6">
+          <h3 className="text-base font-black text-[#0F172A] flex items-center gap-2 mb-4">
             <span className="material-symbols-outlined text-teal-600">schedule</span>
             Fin de seance
             {valide && <span className="ml-auto text-xs bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1"><span className="material-symbols-outlined text-sm">lock</span>Valide</span>}
@@ -398,7 +398,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
           {!valide ? (
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col items-center justify-center gap-3">
+            <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-6 flex flex-col items-center justify-center gap-3">
               <p className="text-sm text-on-surface-variant text-center">Une fois valide, le dossier sera verrouille et ajoute a l'historique.</p>
               <button onClick={() => setShowConfirm(true)}
                 className="flex items-center gap-2 px-8 py-3 rounded-xl bg-emerald-500 text-white font-bold text-base shadow-lg hover:bg-emerald-600 transition-all">
@@ -413,28 +413,28 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
             </div>
           )}
 
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <h4 className="font-title-sm text-on-surface mb-4">Actions rapides</h4>
+          <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-6">
+            <h4 className="text-base font-black text-[#0F172A] mb-4">Actions rapides</h4>
             <div className="space-y-3">
               <button onClick={() => setShowRdvModal(true)}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-primary text-white font-semibold text-sm hover:opacity-90 transition-all">
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white font-semibold text-sm hover:bg-[#005a76] transition-all">
                 <span className="material-symbols-outlined text-lg">event_available</span>
                 Nouveau rendez-vous
               </button>
               {rdvConfirme && (
-                <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
+                <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2">
                   <span className="material-symbols-outlined text-emerald-500 text-sm">check_circle</span>
                   <p className="text-xs font-semibold text-emerald-700">RDV planifie le {new Date(rdvDate + 'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})} a {rdvHeureDeb}</p>
                 </div>
               )}
               {from === 'archives' ? (
-                <Link href="/archives" className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-slate-200 text-on-surface font-semibold text-sm hover:bg-slate-50 transition-all"><span className="material-symbols-outlined text-lg">arrow_back</span>Retour aux archives</Link>
+                <Link href="/archives" className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-[#E2E8F0] text-[#475569] font-bold text-sm hover:bg-gray-50 transition-all"><span className="material-symbols-outlined text-lg">arrow_back</span>Retour aux archives</Link>
               ) : from === 'calendrier' ? (
-                <Link href="/calendrier" className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-slate-200 text-on-surface font-semibold text-sm hover:bg-slate-50 transition-all"><span className="material-symbols-outlined text-lg">arrow_back</span>Retour au calendrier</Link>
+                <Link href="/calendrier" className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-[#E2E8F0] text-[#475569] font-bold text-sm hover:bg-gray-50 transition-all"><span className="material-symbols-outlined text-lg">arrow_back</span>Retour au calendrier</Link>
               ) : from === 'dashboard' ? (
-                <Link href="/" className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-slate-200 text-on-surface font-semibold text-sm hover:bg-slate-50 transition-all"><span className="material-symbols-outlined text-lg">arrow_back</span>Retour au tableau de bord</Link>
+                <Link href="/" className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-[#E2E8F0] text-[#475569] font-bold text-sm hover:bg-gray-50 transition-all"><span className="material-symbols-outlined text-lg">arrow_back</span>Retour au tableau de bord</Link>
               ) : (
-                <Link href="/patients" className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-slate-200 text-on-surface font-semibold text-sm hover:bg-slate-50 transition-all"><span className="material-symbols-outlined text-lg">arrow_back</span>Retour a la liste</Link>
+                <Link href="/patients" className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-[#E2E8F0] text-[#475569] font-bold text-sm hover:bg-gray-50 transition-all"><span className="material-symbols-outlined text-lg">arrow_back</span>Retour a la liste</Link>
               )}
             </div>
           </div>
@@ -444,7 +444,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
 
       {showRdvModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-surface rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
+          <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-2xl p-8 max-w-md w-full mx-4">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
                 <span className="material-symbols-outlined text-primary text-2xl">event_available</span>
@@ -461,19 +461,19 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
               <div>
                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">Date du rendez-vous</label>
                 <input type="date" value={rdvDate} onChange={e => setRdvDate(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none" />
+                  className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-white text-sm focus:border-[#006A8C] focus:ring-2 focus:ring-[#006A8C]/20 outline-none" />
               </div>
               <div>
                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">Heure</label>
                 <input type="time" value={rdvHeureDeb} onChange={e => setRdvHeureDeb(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none" />
+                  className="w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-white text-sm focus:border-[#006A8C] focus:ring-2 focus:ring-[#006A8C]/20 outline-none" />
               </div>
               <div>
                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">Type de seance</label>
                 <div className="flex gap-2">
                   {['consultation','soin'].map(type => (
                     <button key={type} onClick={() => setRdvType(type)}
-                      className={'flex-1 py-2 rounded-lg border-2 text-sm font-semibold capitalize transition-all ' + (rdvType===type ? TYPE_COLOR[type] : 'border-slate-200 text-slate-400 bg-slate-50 hover:bg-slate-100')}>
+                      className={'flex-1 py-2 rounded-xl border-2 text-sm font-semibold capitalize transition-all ' + (rdvType===type ? TYPE_COLOR[type] : 'border-slate-200 text-slate-400 bg-slate-50 hover:bg-slate-100')}>
                       {type}
                     </button>
                   ))}
@@ -482,11 +482,11 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
             </div>
             <div className="flex gap-3 mt-6">
               <button onClick={() => setShowRdvModal(false)}
-                className="flex-1 px-4 py-2.5 rounded-lg border border-outline-variant text-on-surface font-semibold text-sm hover:bg-surface-container-low">
+                className="flex-1 px-4 py-2.5 rounded-xl border border-outline-variant text-on-surface font-semibold text-sm hover:bg-surface-container-low">
                 Annuler
               </button>
               <button onClick={planifierRdv} disabled={!rdvDate || !rdvHeureDeb}
-                className="flex-1 px-4 py-2.5 rounded-lg bg-primary text-white font-semibold text-sm hover:opacity-90 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                className="flex-1 px-4 py-2.5 rounded-xl bg-primary text-white font-semibold text-sm hover:bg-[#005a76] shadow-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                 <span className="material-symbols-outlined text-sm">check</span>
                 Planifier
               </button>
@@ -497,7 +497,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
 
       {showConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-surface rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 text-center">
+          <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-2xl p-8 max-w-sm w-full mx-4 text-center">
             <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="material-symbols-outlined text-emerald-500 text-3xl">check_circle</span>
             </div>
@@ -505,11 +505,11 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
             <p className="text-sm text-on-surface-variant mb-6">Une fois valide, le dossier sera verrouille et ajoute a l'historique. Cette action est irreversible.</p>
             <div className="flex gap-3">
               <button onClick={() => setShowConfirm(false)}
-                className="flex-1 px-4 py-2.5 rounded-lg border border-outline-variant text-on-surface font-semibold text-sm hover:bg-surface-container-low">
+                className="flex-1 px-4 py-2.5 rounded-xl border border-outline-variant text-on-surface font-semibold text-sm hover:bg-surface-container-low">
                 Annuler
               </button>
               <button onClick={confirmerValidation}
-                className="flex-1 px-4 py-2.5 rounded-lg bg-emerald-500 text-white font-semibold text-sm hover:bg-emerald-600 shadow-sm">
+                className="flex-1 px-4 py-2.5 rounded-xl bg-emerald-500 text-white font-semibold text-sm hover:bg-emerald-600 shadow-sm">
                 Confirmer
               </button>
             </div>
@@ -519,7 +519,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
 
       {showHistorique && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-surface rounded-2xl shadow-2xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-2xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-on-surface flex items-center gap-2">
                 <span className="material-symbols-outlined text-emerald-500">history</span>
@@ -534,7 +534,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
             ) : (
               <div className="space-y-3">
                 {seancesHistorique.map((s, i) => (
-                  <div key={i} className="bg-emerald-50 rounded-lg p-4 border border-emerald-200">
+                  <div key={i} className="bg-emerald-50 rounded-xl p-4 border border-emerald-200">
                     <p className="text-xs font-bold uppercase tracking-widest text-emerald-700 mb-2 flex items-center gap-1.5">
                       <span className="material-symbols-outlined text-sm">event</span>{s.date} — {(s.heureDebut || '?').replace(':','h')}-{(s.heureFin || '?').replace(':','h')}
                     </p>

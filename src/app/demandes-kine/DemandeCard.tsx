@@ -49,32 +49,28 @@ export default function DemandeCard({ demande }: { demande: any }) {
     if (res.ok) setOpen(false)
   }
 
+  const champ =
+    'w-full px-3 py-2 rounded-xl border border-[#E2E8F0] bg-white text-sm text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#006A8C]/20 focus:border-[#006A8C]'
+  const libelle = 'block text-[11px] font-bold uppercase tracking-wider text-[#64748B] mb-1'
+
   return (
-    <div
-      style={{
-        border: '1px solid #ccc',
-        borderRadius: 8,
-        padding: '1rem',
-        marginBottom: '1rem',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '1rem',
-        }}
-      >
-        <div>
-          <strong>Patient :</strong> Non identifié
-          {'  '}| <strong>Type(s) :</strong> {typesKine || '—'}
-          {'  '}| <strong>Urgence :</strong> {demande.urgence}
-          <br />
-          <span style={{ color: '#555' }}>
+    <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-4 mb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="min-w-0 text-sm text-[#0F172A]">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span><span className="font-bold">Patient :</span> Non identifié</span>
+            <span className="text-[#CBD5E1]">|</span>
+            <span><span className="font-bold">Type(s) :</span> {typesKine || '—'}</span>
+            <span className="text-[#CBD5E1]">|</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="font-bold">Urgence :</span>
+              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#F0F7FF] text-[#006A8C]">{demande.urgence}</span>
+            </span>
+          </div>
+          <p className="text-[#64748B] mt-1">
             {demande.diagnostic}
             {demande.renseignements ? ` — ${demande.renseignements}` : ''}
-          </span>
+          </p>
         </div>
         {!open && (
           <button
@@ -82,62 +78,46 @@ export default function DemandeCard({ demande }: { demande: any }) {
               setOpen(true)
               setResult(null)
             }}
-            style={{
-              padding: '0.5rem 1rem',
-              background: '#0d9488',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 6,
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-            }}
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-[#006A8C] hover:bg-[#005a76] text-white text-sm font-bold whitespace-nowrap transition-colors"
           >
+            <span className="material-symbols-outlined text-base">event_available</span>
             Planifier RDV
           </button>
         )}
       </div>
 
       {open && (
-        <div
-          style={{
-            marginTop: '1rem',
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '0.75rem',
-            alignItems: 'flex-end',
-          }}
-        >
-          <label>
-            Date
-            <br />
+        <div className="mt-4 pt-4 border-t border-[#F1F5F9] flex flex-wrap gap-3 items-end">
+          <label className="text-sm">
+            <span className={libelle}>Date</span>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
+              className={champ}
             />
           </label>
-          <label>
-            Début
-            <br />
+          <label className="text-sm">
+            <span className={libelle}>Début</span>
             <input
               type="time"
               value={heureDebut}
               onChange={(e) => setHeureDebut(e.target.value)}
+              className={champ}
             />
           </label>
-          <label>
-            Fin
-            <br />
+          <label className="text-sm">
+            <span className={libelle}>Fin</span>
             <input
               type="time"
               value={heureFin}
               onChange={(e) => setHeureFin(e.target.value)}
+              className={champ}
             />
           </label>
-          <label>
-            Type
-            <br />
-            <select value={type} onChange={(e) => setType(e.target.value)}>
+          <label className="text-sm">
+            <span className={libelle}>Type</span>
+            <select value={type} onChange={(e) => setType(e.target.value)} className={champ}>
               {TYPES.map((tp) => (
                 <option key={tp} value={tp}>
                   {tp}
@@ -145,40 +125,26 @@ export default function DemandeCard({ demande }: { demande: any }) {
               ))}
             </select>
           </label>
-          <label style={{ flex: 1, minWidth: 180 }}>
-            Motif
-            <br />
+          <label className="text-sm flex-1 min-w-[180px]">
+            <span className={libelle}>Motif</span>
             <input
               type="text"
               value={motif}
               onChange={(e) => setMotif(e.target.value)}
-              style={{ width: '100%' }}
+              className={champ}
             />
           </label>
           <button
             onClick={confirmer}
             disabled={busy}
-            style={{
-              padding: '0.5rem 1rem',
-              background: busy ? '#94a3b8' : '#0d9488',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 6,
-              cursor: busy ? 'default' : 'pointer',
-            }}
+            className="px-4 py-2 rounded-xl bg-[#006A8C] hover:bg-[#005a76] text-white text-sm font-bold transition-colors disabled:bg-[#94A3B8] disabled:cursor-default"
           >
             {busy ? 'Planification…' : 'Confirmer'}
           </button>
           <button
             onClick={() => setOpen(false)}
             disabled={busy}
-            style={{
-              padding: '0.5rem 1rem',
-              background: '#e2e8f0',
-              border: 'none',
-              borderRadius: 6,
-              cursor: 'pointer',
-            }}
+            className="px-4 py-2 rounded-xl border border-[#E2E8F0] bg-white text-[#475569] text-sm font-bold hover:bg-gray-50 transition-colors"
           >
             Annuler
           </button>
@@ -186,7 +152,7 @@ export default function DemandeCard({ demande }: { demande: any }) {
       )}
 
       {result && (
-        <p style={{ color: result.ok ? 'green' : 'crimson', marginTop: '0.5rem' }}>
+        <p className={'mt-2 text-sm font-semibold ' + (result.ok ? 'text-emerald-600' : 'text-[#E11D48]')}>
           {result.message}
         </p>
       )}

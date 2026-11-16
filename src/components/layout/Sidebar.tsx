@@ -43,68 +43,91 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
   return (
     <>
       {open && (
-        <div className="fixed inset-0 bg-black/40 z-40 lg:hidden" onClick={onClose} />
+        <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[1px] md:hidden" onClick={onClose} aria-hidden />
       )}
-      <aside className={`fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-[#3273b0] to-[#2a5a8f] shadow-lg flex flex-col z-50 transition-transform duration-300 ${open ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
-      <div className="p-6 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
-          <span className="material-symbols-outlined text-white text-xl">clinical_notes</span>
+      <aside
+        className={
+          'bg-white border-r border-[#F1F5F9] flex flex-col h-full shrink-0 shadow-[1px_0px_5px_rgba(0,0,0,0.01)] overflow-y-auto z-50 ' +
+          'fixed inset-y-0 left-0 w-[82vw] max-w-[280px] transition-transform duration-200 md:static md:w-[220px] lg:w-[260px] ' +
+          'md:rounded-tr-[24px] md:mt-2 ' +
+          (open ? 'translate-x-0' : '-translate-x-full md:translate-x-0')
+        }
+      >
+        <div className="flex items-center justify-between px-4 pt-4 pb-2 md:hidden">
+          <span className="text-[10px] font-extrabold text-gray-400 uppercase tracking-[0.2em]">Navigation</span>
+          <button
+            type="button"
+            onClick={onClose}
+            className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-gray-200 text-gray-500 hover:text-gray-900 hover:border-gray-300 transition-colors"
+            aria-label="Fermer la navigation"
+          >
+            <span className="material-symbols-outlined text-[18px]">close</span>
+          </button>
         </div>
-        <div className="flex-1">
-          <h1 className="text-lg font-bold text-white font-manrope leading-tight">CHU Andrainjato</h1>
-          <p className="text-[10px] text-sky-100 uppercase tracking-widest">{t('sidebar_kinesitherapie')}</p>
+
+        <nav className="flex-1 px-4 py-4 sm:py-5 space-y-1.5">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={onClose}
+                className={
+                  'flex items-center gap-3 sm:gap-4 px-4 py-3 sm:py-3.5 rounded-[12px] transition-colors duration-200 ' +
+                  (isActive ? 'bg-[#F0F7FF] text-[#006A8C] font-bold' : 'text-[#475569] hover:bg-gray-50 font-medium')
+                }
+              >
+                <span className={'material-symbols-outlined text-[20px] shrink-0 ' + (isActive ? 'text-[#006A8C]' : 'text-[#64748B]')}>
+                  {item.icon}
+                </span>
+                <span className="text-[13px] sm:text-[14px]">{item.label}</span>
+              </Link>
+            )
+          })}
+        </nav>
+
+        <div className="px-4 sm:px-5 py-5 sm:py-6 space-y-5 border-t border-[#F1F5F9]">
+          <ActionsCompte
+            className="flex w-full items-center gap-3 px-4 text-slate-500 transition-colors hover:text-slate-900"
+            classeLibelle="text-[12px] sm:text-[13px] font-bold"
+          />
+          <button
+            type="button"
+            onClick={() => setConfirmDeconnexion(true)}
+            className="flex items-center gap-3 px-4 text-[#E11D48] hover:text-red-700 transition-colors w-full"
+          >
+            <span className="material-symbols-outlined text-[18px] w-5 text-center">logout</span>
+            <span className="text-[12px] sm:text-[13px] font-bold">{t('sidebar_deconnexion')}</span>
+          </button>
         </div>
-        <button onClick={onClose} className="lg:hidden text-white/80 hover:text-white">
-          <span className="material-symbols-outlined">close</span>
-        </button>
-      </div>
-      <nav className="mt-4 flex-1 px-2 space-y-1">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={onClose}
-              className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ease-out border-2 ${isActive ? 'bg-white text-[#2a5a8f] shadow-md scale-[1.02] border-[#2a5a8f]' : 'bg-white/10 text-white border-[#2a5a8f] hover:bg-white/25 hover:shadow-sm'}`}
-            >
-              <span className={`material-symbols-outlined text-xl w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isActive ? 'bg-[#2a5a8f]/10' : 'bg-white/20'}`}>{item.icon}</span>
-              <span className="tracking-wide">{item.label}</span>
-            </Link>
-          )
-        })}
-      </nav>
-      <div className="px-4 pb-6">
-        <ActionsCompte className="w-full flex items-center justify-center gap-2 p-3 mb-1 rounded-xl hover:bg-white/15 text-white font-semibold text-sm transition-colors" />
-        <button
-          onClick={() => setConfirmDeconnexion(true)}
-          className="w-full flex items-center justify-center gap-2 p-3 rounded-xl bg-white/15 hover:bg-red-500 text-white font-semibold text-sm transition-colors"
-        >
-          <span className="material-symbols-outlined text-lg">logout</span>
-          {t('sidebar_deconnexion')}
-        </button>
-      </div>
+      </aside>
 
       {confirmDeconnexion && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-surface rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 text-center">
-            <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="material-symbols-outlined text-red-500 text-3xl">logout</span>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+          <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-2xl p-8 max-w-sm w-full text-center">
+            <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="material-symbols-outlined text-[#E11D48] text-3xl">logout</span>
             </div>
-            <h3 className="text-lg font-bold text-on-surface mb-2">{t('sidebar_deconnecterQ')}</h3>
-            <p className="text-sm text-on-surface-variant mb-6">{t('sidebar_deconnecterDesc')}</p>
+            <h3 className="text-lg font-black text-[#0F172A] mb-2">{t('sidebar_deconnecterQ')}</h3>
+            <p className="text-sm text-[#64748B] mb-6">{t('sidebar_deconnecterDesc')}</p>
             <div className="flex gap-3">
-              <button onClick={() => setConfirmDeconnexion(false)} className="flex-1 px-4 py-2.5 rounded-lg border border-outline-variant text-on-surface font-semibold text-sm hover:bg-surface-container-low">
+              <button
+                onClick={() => setConfirmDeconnexion(false)}
+                className="flex-1 px-4 py-2.5 rounded-xl border border-[#E2E8F0] text-[#475569] font-bold text-sm hover:bg-gray-50"
+              >
                 {t('sidebar_annuler')}
               </button>
-              <button onClick={deconnecter} className="flex-1 px-4 py-2.5 rounded-lg bg-red-500 text-white font-semibold text-sm hover:bg-red-600 shadow-sm">
+              <button
+                onClick={deconnecter}
+                className="flex-1 px-4 py-2.5 rounded-xl bg-[#E11D48] text-white font-bold text-sm hover:bg-rose-700 shadow-sm"
+              >
                 {t('sidebar_confirmer')}
               </button>
             </div>
           </div>
         </div>
       )}
-      </aside>
     </>
   )
 }

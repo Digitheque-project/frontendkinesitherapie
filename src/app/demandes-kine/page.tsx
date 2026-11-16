@@ -25,21 +25,23 @@ export default function DemandesKinePage() {
 
   return (
     <AppShell>
-      <div style={{ padding: '2rem' }}>
-        <h1>Demandes de kinésithérapie</h1>
-        <p style={{ color: '#555' }}>
+      <div>
+        <h2 className="text-2xl font-black text-[#004A66] tracking-tight">Demandes de kinésithérapie</h2>
+        <p className="text-sm text-[#64748B] mt-1">
           Planifiez un rendez-vous pour chaque demande reçue : le patient et le rendez-vous seront créés automatiquement.
         </p>
         {chargement ? (
-          <p>Chargement...</p>
+          <p className="py-12 text-center text-sm text-[#64748B]">Chargement...</p>
         ) : erreur ? (
-          <p style={{ color: 'crimson' }}>
+          <p className="py-12 text-center text-sm font-semibold text-[#E11D48]">
             Impossible de charger les demandes : {erreur}
           </p>
         ) : demandes.length === 0 ? (
-          <p>Aucune demande pour le moment.</p>
+          <div className="mt-6 py-12 text-center text-sm text-[#64748B] bg-white rounded-2xl border border-[#F1F5F9]">
+            Aucune demande pour le moment.
+          </div>
         ) : (
-          <div style={{ marginTop: '1rem' }}>
+          <div className="mt-6">
             {demandes.map((demande: any) => (
               <DemandeCard key={demande.id} demande={demande} />
             ))}

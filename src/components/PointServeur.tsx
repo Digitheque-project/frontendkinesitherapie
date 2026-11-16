@@ -14,7 +14,7 @@ function lire(): boolean {
   return !!(window as unknown as { __chuServeur?: { pret: boolean } }).__chuServeur?.pret;
 }
 
-export default function PointServeur({ className = "" }: { className?: string }) {
+export default function PointServeur({ className = "", sansMarge = false }: { className?: string; sansMarge?: boolean }) {
   const pret = useSyncExternalStore(abonner, lire, () => false);
   return (
     <span
@@ -23,12 +23,12 @@ export default function PointServeur({ className = "" }: { className?: string })
       className={className}
       style={{
         display: "inline-block",
-        width: 9,
-        height: 9,
+        width: sansMarge ? 11 : 9,
+        height: sansMarge ? 11 : 9,
         borderRadius: 9999,
         flexShrink: 0,
         verticalAlign: "middle",
-        marginRight: 6,
+        marginRight: sansMarge ? 0 : 6,
         background: pret ? "#10b981" : "#fb923c",
         boxShadow: "0 0 0 2px #fff",
       }}

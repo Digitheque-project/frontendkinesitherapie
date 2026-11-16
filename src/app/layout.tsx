@@ -2,6 +2,12 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { LanguageProvider } from '@/context/LanguageContext'
 import Script from "next/script";
+import { Manrope } from 'next/font/google'
+
+const manrope = Manrope({
+  variable: '--font-sans',
+  subsets: ['latin'],
+})
 
 export const metadata: Metadata = {
   title: 'CHU Andrainjato — Clinical Management',
@@ -10,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className="light">
+    <html lang="fr" className={`light ${manrope.variable} font-sans antialiased`}>
       <head>
         <link
           href="/polices/texte.css"
@@ -21,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className="font-body-md text-on-surface bg-background min-h-screen">
+      <body className="font-sans text-[#0F172A] bg-[#F8F9FB] min-h-screen">
         <LanguageProvider>{children}</LanguageProvider>
       
         {/* Onglet caché : toute interrogation répétée (toutes les 5 s ou plus) ne

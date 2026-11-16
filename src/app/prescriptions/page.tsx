@@ -315,7 +315,7 @@ function PrescriptionsContent() {
     <AppShell showSearch={false}>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-on-surface font-manrope">Prescriptions</h2>
+          <h2 className="text-2xl font-black text-[#004A66] tracking-tight">Prescriptions</h2>
           <p className="text-sm text-on-surface-variant mt-1">{filtrees.length} demande(s) en attente</p>
         </div>
       </div>
@@ -324,7 +324,7 @@ function PrescriptionsContent() {
 
       {!patientIdFiltre && (
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
-          <div className="flex items-center gap-3 bg-surface border border-outline-variant px-4 py-2 rounded-lg flex-1 max-w-md">
+          <div className="flex items-center gap-3 bg-surface border border-outline-variant px-4 py-2 rounded-xl flex-1 max-w-md">
             <span className="material-symbols-outlined text-on-surface-variant text-lg">search</span>
             <input
               type="text"
@@ -345,10 +345,10 @@ function PrescriptionsContent() {
                 key={f.valeur}
                 onClick={() => setFiltreUrgence(f.valeur)}
                 className={
-                  'px-3.5 py-2 rounded-lg text-xs font-semibold border transition-colors ' +
+                  'px-3.5 py-2 rounded-full text-xs font-semibold border transition-colors ' +
                   (filtreUrgence === f.valeur
-                    ? 'bg-primary text-white border-primary'
-                    : 'bg-surface text-on-surface-variant border-outline-variant hover:bg-surface-container-low')
+                    ? 'bg-[#006A8C] text-white border-[#006A8C] font-bold'
+                    : 'bg-white text-[#475569] border-[#E2E8F0] hover:bg-gray-50')
                 }
               >
                 {f.label}
@@ -375,10 +375,10 @@ function PrescriptionsContent() {
               d.patientPrenom && d.patientNom ? `${d.patientPrenom} ${d.patientNom}` : 'Patient non identifié'
 
             return (
-              <div key={d.id} className={'bg-blue-500/10 rounded-xl border border-blue-500 shadow-sm border-l-4 p-4 ' + s.bord}>
+              <div key={d.id} className={'bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] border-l-4 p-4 ' + s.bord}>
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-0">
                   <div className="min-w-0 md:w-48 md:flex-shrink-0">
-                    <p className="font-semibold text-on-surface">{nomComplet}</p>
+                    <p className="font-bold text-[#0F172A]">{nomComplet}</p>
                     <p className="text-xs text-on-surface-variant">
                       {formatDate(d.patientDateNaissance)} — {labelSexe(d.patientSexe)}
                     </p>
@@ -391,8 +391,8 @@ function PrescriptionsContent() {
                   </div>
 
                   <div className="min-w-0 md:w-64 md:flex-shrink-0">
-                    <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wide">Diagnostic :</p>
-                    <p className="text-sm text-gray-500 truncate">
+                    <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Diagnostic :</p>
+                    <p className="text-sm text-[#64748B] truncate">
                       {d.diagnostic || 'Non renseigné'}
                       {d.renseignements ? ` — ${d.renseignements}` : ''}
                     </p>
@@ -401,7 +401,7 @@ function PrescriptionsContent() {
                   <div className="md:flex-shrink-0">
                     <button
                       onClick={() => ouvrirModale(d)}
-                      className="w-full md:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors"
+                      className="w-full md:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-[#006A8C] text-white text-sm font-semibold hover:bg-[#005a76] transition-colors"
                     >
                       <span className="material-symbols-outlined text-base">event_available</span>
                       Planifier
@@ -416,9 +416,9 @@ function PrescriptionsContent() {
 
       {demandeActive && sActive && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-          <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden border border-blue-500/60">
+          <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-2xl w-full max-w-sm overflow-hidden border border-[#F1F5F9]">
             <div className={'px-6 pt-5 pb-4 ' + sActive.entete}>
-              <h3 className="text-lg font-bold text-on-surface">Planifier le rendez-vous</h3>
+              <h3 className="text-lg font-black text-[#004A66]">Planifier le rendez-vous</h3>
               <p className={'text-sm font-semibold mt-1 ' + sActive.accent}>{nomActif}</p>
             </div>
 
@@ -429,10 +429,10 @@ function PrescriptionsContent() {
                     key={opt.valeur}
                     onClick={() => setChoix(opt.valeur)}
                     className={
-                      'w-full text-left px-4 py-2.5 rounded-lg text-sm font-semibold border transition-colors flex items-center gap-2 ' +
+                      'w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors flex items-center gap-2 ' +
                       (choix === opt.valeur
                         ? 'bg-primary text-white border-primary'
-                        : 'bg-surface text-on-surface border-outline-variant hover:bg-surface-container-low')
+                        : 'bg-white text-[#0F172A] border-[#E2E8F0] hover:bg-gray-50')
                     }
                   >
                     <span className="material-symbols-outlined text-base">
@@ -451,7 +451,7 @@ function PrescriptionsContent() {
                       type="date"
                       value={dateP}
                       onChange={(e) => setDateP(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border border-outline-variant text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      className="w-full px-3 py-2 rounded-xl border border-outline-variant text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-[#006A8C]/20"
                     />
                   </div>
                   <div>
@@ -460,14 +460,14 @@ function PrescriptionsContent() {
                       type="time"
                       value={heureP}
                       onChange={(e) => setHeureP(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border border-outline-variant text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      className="w-full px-3 py-2 rounded-xl border border-outline-variant text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-[#006A8C]/20"
                     />
                   </div>
                 </div>
               )}
 
               {feedback && (
-                <p className={'text-sm font-semibold mb-3 ' + (feedback.ok ? 'text-green-600' : 'text-red-600')}>
+                <p className={'text-sm font-semibold mb-3 ' + (feedback.ok ? 'text-emerald-600' : 'text-[#E11D48]')}>
                   {feedback.message}
                 </p>
               )}
@@ -476,14 +476,14 @@ function PrescriptionsContent() {
                 <button
                   onClick={fermerModale}
                   disabled={busy}
-                  className="flex-1 px-4 py-2.5 rounded-lg border border-outline-variant text-on-surface font-semibold text-sm hover:bg-surface-container-low disabled:opacity-50"
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-outline-variant text-on-surface font-semibold text-sm hover:bg-surface-container-low disabled:opacity-50"
                 >
                   Annuler
                 </button>
                 <button
                   onClick={confirmerPlanification}
                   disabled={!choix || busy}
-                  className="flex-1 px-4 py-2.5 rounded-lg bg-primary text-white font-semibold text-sm hover:opacity-90 shadow-sm disabled:opacity-50"
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-primary text-white font-semibold text-sm hover:bg-[#005a76] shadow-sm disabled:opacity-50"
                 >
                   {busy ? 'Planification…' : 'Confirmer'}
                 </button>

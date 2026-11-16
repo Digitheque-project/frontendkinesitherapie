@@ -174,64 +174,87 @@ export default function TopBar({
   }
 
   return (
-    <header className="sticky top-0 z-40 w-full h-16 bg-surface/80 backdrop-blur-md border-b border-outline-variant px-4 md:px-8 flex justify-between items-center gap-3">
-      <button onClick={onMenuClick} className="lg:hidden text-on-surface-variant hover:text-primary flex-shrink-0">
-        <span className="material-symbols-outlined">menu</span>
-      </button>
-      {showSearch && (
-        <div className="hidden sm:flex items-center gap-3 bg-surface-container-low px-4 py-2 rounded-full w-full max-w-xs md:max-w-sm lg:w-96">
-          <span className="material-symbols-outlined text-on-surface-variant text-base">search</span>
-          <input
-            type="text"
-            placeholder={placeholder}
-            className="bg-transparent border-none focus:outline-none focus:ring-0 text-sm w-full text-on-surface placeholder-on-surface-variant"
+    <header className="relative z-40 w-full bg-white border-b border-[#F1F5F9] px-4 sm:px-6 lg:px-7 py-2.5 sm:py-3 flex items-center justify-between gap-3 shadow-[0px_4px_10px_rgba(0,0,0,0.015)]">
+      {/* Gauche : menu mobile, logo du CHU (venant du jeton), nom du service */}
+      <div className="flex items-center gap-3 min-w-0">
+        <button
+          type="button"
+          onClick={onMenuClick}
+          className="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300 transition-colors flex-shrink-0"
+          aria-label="Ouvrir la navigation"
+        >
+          <span className="material-symbols-outlined text-[20px]">menu</span>
+        </button>
+        {utilisateur.chuLogoUrl ? (
+          <img
+            src={utilisateur.chuLogoUrl}
+            alt="Logo CHU"
+            className="h-8 w-8 sm:h-9 sm:w-9 rounded-full object-cover border border-[#CFE9EF] flex-shrink-0"
           />
+        ) : null}
+        <div className="text-[16px] sm:text-[18px] lg:text-[20px] font-black text-[#004A66] tracking-tight truncate">
+          Kinésithérapie
         </div>
-      )}
-      {!showSearch && <div />}
-      <div className="flex items-center gap-3 md:gap-6">
-        <div className="hidden sm:flex items-center gap-3 bg-gradient-to-br from-sky-50 to-sky-100 border border-sky-200 rounded-xl pl-3 pr-4 py-2">
-          <div className="w-9 h-9 rounded-lg bg-sky-600 flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-white text-lg">calendar_month</span>
+      </div>
+
+      {/* Centre : Bonjour + date/heure */}
+      <div className="hidden md:flex items-center gap-4 min-w-0">
+        <span className="text-[13px] font-semibold text-gray-500 truncate">
+          Bonjour{utilisateur.prenom ? ` ${utilisateur.prenom}` : ''}
+        </span>
+        <span className="hidden xl:inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#64748B] capitalize whitespace-nowrap">
+          <span className="material-symbols-outlined text-[16px] text-[#006A8C]">calendar_month</span>
+          {now
+            ? now.toLocaleDateString('fr-FR', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              }) + ' : ' + now.toLocaleTimeString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+              }).split(':').join(' : ')
+            : ' '}
+        </span>
+        {showSearch && (
+          <div className="hidden lg:flex items-center gap-2 bg-[#F8F9FB] border border-[#E2E8F0] px-3 py-1.5 rounded-xl w-64">
+            <span className="material-symbols-outlined text-[#64748B] text-base">search</span>
+            <input
+              type="text"
+              placeholder={placeholder}
+              className="bg-transparent border-none focus:outline-none focus:ring-0 text-sm w-full text-[#0F172A] placeholder:text-[#94A3B8]"
+            />
           </div>
-          <div className="flex items-center">
-            <p className="text-sm font-semibold text-sky-800 capitalize whitespace-nowrap">
-              {now
-                ? now.toLocaleDateString('fr-FR', {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  }) + ' : ' + now.toLocaleTimeString('fr-FR', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                  }).split(':').join(' : ')
-                : ' '}
-            </p>
-          </div>
-        </div>
+        )}
+      </div>
+
+      {/* Droite : actions, notifications, profil */}
+      <div className="flex items-center gap-4 sm:gap-5 lg:gap-8 flex-shrink-0">
         {actions}
-
-
         <PastilleAutresServices />
         <div className="relative" ref={menuRef}>
-          <button onClick={() => { setOpen((o) => !o); onBellClick?.() }} className="relative text-on-surface-variant hover:text-primary transition-colors">
-            <span className="material-symbols-outlined">notifications</span>
+          <button
+            type="button"
+            onClick={() => { setOpen((o) => !o); onBellClick?.() }}
+            className="relative block text-gray-700 hover:text-[#006A8C] transition-colors"
+            aria-label="Notifications"
+          >
+            <span className="material-symbols-outlined text-[24px]">notifications</span>
             {nonLues.length > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 bg-error rounded-full text-[10px] text-white flex items-center justify-center font-bold animate-pulse">
+              <span className="absolute -top-1 -right-1 h-4 min-w-[16px] sm:h-[18px] sm:min-w-[18px] px-1 bg-[#E11D48] text-white text-[9px] sm:text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">
                 {nonLues.length}
               </span>
             )}
           </button>
 
           {open && (
-            <div className="absolute right-0 mt-3 w-96 max-h-[460px] overflow-y-auto bg-surface rounded-xl border-[3px] border-blue-500/50 shadow-xl z-50">
-              <div className="px-4 py-3 border-b border-outline-variant sticky top-0 bg-blue-600">
-                <p className="font-semibold text-white text-sm mb-2">Notifications ({nonLues.length})</p>
+            <div className="absolute right-0 mt-3 w-[22rem] sm:w-96 max-w-[calc(100vw-2rem)] max-h-[460px] overflow-y-auto bg-white rounded-2xl border border-[#F1F5F9] shadow-xl z-50">
+              <div className="px-4 py-3 border-b border-[#F1F5F9] sticky top-0 bg-white">
+                <p className="font-black text-[#004A66] text-sm">Notifications ({nonLues.length})</p>
               </div>
               {triees.length === 0 ? (
-                <div className="py-8 text-center text-on-surface-variant text-sm">
+                <div className="py-8 text-center text-[#64748B] text-sm">
                   Aucune notification en attente
                 </div>
               ) : (
@@ -242,22 +265,20 @@ export default function TopBar({
                       key={n.id}
                       onClick={() => allerVersPrescription(n)}
                       className={
-                        'px-4 py-3 border-b border-outline-variant last:border-b-0 transition-colors border-l-4 cursor-pointer ' +
-                        (n.lue ? 'bg-surface hover:bg-surface-container-low/50 border-l-outline-variant' : s.fond + ' hover:brightness-95 ' + s.bord)
+                        'px-4 py-3 border-b border-[#F1F5F9] last:border-b-0 transition-colors border-l-4 cursor-pointer ' +
+                        (n.lue ? 'bg-white hover:bg-gray-50 border-l-[#E2E8F0]' : s.fond + ' hover:brightness-95 ' + s.bord)
                       }
                     >
                       <div className="flex items-center justify-between mb-1">
-                        <div className="flex items-center gap-1.5">
-                          <span className={'text-[10px] font-bold px-2 py-0.5 rounded-full ' + s.badge}>
-                            {n.urgence}
-                          </span>
-                        </div>
-                        <span className="text-[10px] text-on-surface-variant">{formatDateHeure(n.createdAt)}</span>
+                        <span className={'text-[10px] font-bold px-2 py-0.5 rounded-full ' + s.badge}>
+                          {n.urgence}
+                        </span>
+                        <span className="text-[10px] text-[#64748B]">{formatDateHeure(n.createdAt)}</span>
                       </div>
-                      <p className={'text-sm text-on-surface ' + (n.lue ? 'font-medium' : 'font-bold')}>{n.patientNom && n.patientPrenom ? `${n.patientPrenom} ${n.patientNom}` : 'Patient inconnu'}</p>
-                      <p className="text-xs text-on-surface-variant truncate">{n.typeKine} — {n.diagnostic}</p>
+                      <p className={'text-sm text-[#0F172A] ' + (n.lue ? 'font-medium' : 'font-bold')}>{n.patientNom && n.patientPrenom ? `${n.patientPrenom} ${n.patientNom}` : 'Patient inconnu'}</p>
+                      <p className="text-xs text-[#64748B] truncate">{n.typeKine} — {n.diagnostic}</p>
                       <div className="flex items-center justify-end mt-2">
-                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#006A8C]">
                           Voir la prescription
                           <span className="material-symbols-outlined text-sm">chevron_right</span>
                         </span>
@@ -270,15 +291,22 @@ export default function TopBar({
           )}
         </div>
 
-        <button className="text-on-surface-variant hover:text-primary transition-colors">
-          <span className="material-symbols-outlined">help_outline</span>
-        </button>
-        <div className="flex items-center gap-3 pl-2 md:pl-4 border-l border-outline-variant">
-          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-            <span className="text-sm font-bold text-primary">{utilisateur.initiales}</span>
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="flex flex-col text-right min-w-0">
+            <span className="text-[12px] sm:text-[12.5px] lg:text-[13px] font-extrabold text-gray-900 leading-tight truncate max-w-[140px] sm:max-w-[180px] lg:max-w-none">
+              {utilisateur.displayName}
+            </span>
+            <span className="hidden sm:block text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-tight mt-0.5 truncate">
+              {utilisateur.role || 'Kinésithérapie'}
+            </span>
           </div>
-          <div className="text-right hidden md:block">
-            <p className="text-sm font-bold text-on-surface leading-none font-manrope"><PointServeur />{'Kiné ' + utilisateur.displayName}</p>
+          <div className="relative w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0">
+            <div className="w-full h-full rounded-full bg-[#F0F7FF] border-2 border-[#CFE9EF] flex items-center justify-center">
+              <span className="text-[12px] sm:text-sm font-black text-[#006A8C]">{utilisateur.initiales}</span>
+            </div>
+            <span className="absolute -bottom-0.5 -right-0.5 leading-none">
+              <PointServeur sansMarge />
+            </span>
           </div>
         </div>
       </div>
