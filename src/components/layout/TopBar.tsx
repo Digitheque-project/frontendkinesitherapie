@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/context/LanguageContext'
 import { getUtilisateurConnecte } from '@/lib/utilisateur'
+import { useLogoAuthentifie } from '@/lib/use-logo-authentifie'
 import { KINE_API } from '@/lib/gateway'
 import PointServeur from "@/components/PointServeur";
 
@@ -93,6 +94,13 @@ export default function TopBar({
   const placeholder = searchPlaceholder || t('topbar_rechercher')
 
   const [utilisateur, setUtilisateur] = useState(getUtilisateurConnecte())
+  const [jetonLogo, setJetonLogo] = useState<string | null>(null)
+  useEffect(() => {
+    try {
+      setJetonLogo(localStorage.getItem('authToken'))
+    } catch {}
+  }, [utilisateur])
+  const logoChu = useLogoAuthentifie(utilisateur.chuLogoUrl, jetonLogo)
   const [notifs, setNotifs] = useState<NotificationKine[]>([])
   const [open, setOpen] = useState(false)
   const [now, setNow] = useState<Date | null>(null)
@@ -185,9 +193,9 @@ export default function TopBar({
         >
           <span className="material-symbols-outlined text-[20px]">menu</span>
         </button>
-        {utilisateur.chuLogoUrl ? (
+        {logoChu ? (
           <img
-            src={utilisateur.chuLogoUrl}
+            src={logoChu}
             alt="Logo CHU"
             className="h-8 w-8 sm:h-9 sm:w-9 rounded-full object-cover border border-[#CFE9EF] flex-shrink-0"
           />
