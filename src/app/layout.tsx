@@ -2,12 +2,16 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { LanguageProvider } from '@/context/LanguageContext'
 import Script from "next/script";
-import { Manrope } from 'next/font/google'
+import localFont from 'next/font/local';
+// Police hébergée dans le projet : la construction ne dépend plus de Google Fonts
+// (téléchargement qui échoue parfois, et impossible sur un réseau fermé).
 
-const manrope = Manrope({
+const manrope = localFont({
+  src: './fonts/manrope-latin.woff2',
   variable: '--font-sans',
-  subsets: ['latin'],
-})
+  weight: '200 800',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'CHU Andrainjato — Clinical Management',
