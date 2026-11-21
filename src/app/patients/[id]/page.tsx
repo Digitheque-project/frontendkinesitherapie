@@ -6,6 +6,7 @@ import Link from 'next/link'
 import AppShell from '@/components/layout/AppShell'
 import { getUtilisateurConnecte } from '@/lib/utilisateur'
 import { KINE_API } from '@/lib/gateway'
+import { libelleStatut } from '@/lib/libelle-statut';
 
 const API = KINE_API
 
@@ -181,7 +182,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
     const { date } = getNow()
     const heureFinFinale = getHeureActuelle()
     setHeureFin(heureFinFinale)
-    const dateIso = new Date().toISOString().slice(0, 10)
+    const dateIso = new Date().toLocaleDateString('sv-SE')
     const nouvelleSeance: SeanceHistorique = { date, heureDebut, heureFin: heureFinFinale, traitement, evolution, conseil }
     const nouvelHistorique = [nouvelleSeance, ...seancesHistorique]
     setSeancesHistorique(nouvelHistorique)
@@ -189,7 +190,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
     setValide(true)
     setShowConfirm(false)
 
-    const dateVisite = new Date().toISOString().slice(0, 10)
+    const dateVisite = new Date().toLocaleDateString('sv-SE')
     fetch(API + '/patients/' + params.id, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -292,7 +293,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
                 <h2 className="text-3xl font-bold text-white ">{nomComplet}</h2>
                 <p className="text-teal-100 font-medium mt-1">{patient.sexe === 'M' ? 'Homme' : 'Femme'}</p>
               </div>
-              <span className={'px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ' + (patient.statut==='actif'?'bg-emerald-400 text-white':patient.statut==='archive'?'bg-red-400 text-white':patient.statut==='en_attente'?'bg-amber-400 text-white':'bg-white/30 text-white')}>{patient.statut}</span>
+              <span className={'px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ' + (patient.statut==='actif'?'bg-emerald-400 text-white':patient.statut==='archive'?'bg-red-400 text-white':patient.statut==='en_attente'?'bg-amber-400 text-white':'bg-white/30 text-white')}>{libelleStatut(patient.statut)}</span>
             </div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 border-t border-white/20 pt-4">

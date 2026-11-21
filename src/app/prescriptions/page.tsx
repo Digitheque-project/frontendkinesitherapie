@@ -251,7 +251,7 @@ function PrescriptionsContent() {
     setChoix(null)
     setFeedback(null)
     const auj = new Date()
-    setDateP(auj.toISOString().slice(0, 10))
+    setDateP(auj.toLocaleDateString('sv-SE'))
     setHeureP('09:00')
   }
 

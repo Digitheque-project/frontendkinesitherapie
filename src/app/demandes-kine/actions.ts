@@ -62,7 +62,7 @@ export async function planifierRendezVous(
         remarques: input.remarques || '',
         nomMedecinPrescripteur: input.nomMedecinPrescripteur || '',
         statut: 'actif',
-        dateAdmission: new Date().toISOString().slice(0, 10),
+        dateAdmission: new Date().toLocaleDateString('sv-SE'),
       })
     }
 

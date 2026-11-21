@@ -88,7 +88,7 @@ export default function PatientsPage() {
   function ouvrirDecaler(rdv: RendezVous) {
     setDecalerRdv(rdv)
     setMenuOpen(null)
-    setDDate(rdv.date || new Date().toISOString().slice(0, 10))
+    setDDate(rdv.date || new Date().toLocaleDateString('sv-SE'))
     setDHeure((rdv.heureDebut || '09:00').slice(0, 5))
   }
   async function confirmerDecaler() {

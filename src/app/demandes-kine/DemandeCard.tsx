@@ -19,7 +19,7 @@ export default function DemandeCard({ demande }: { demande: any }) {
     null,
   )
 
-  const today = new Date().toISOString().slice(0, 10)
+  const today = new Date().toLocaleDateString('sv-SE')
   const [date, setDate] = useState(today)
   const [heureDebut, setHeureDebut] = useState('09:00')
   const [heureFin, setHeureFin] = useState('10:00')
