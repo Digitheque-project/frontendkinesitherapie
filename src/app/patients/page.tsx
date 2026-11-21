@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import AppShell from '@/components/layout/AppShell'
 import { useLanguage } from '@/context/LanguageContext'
 import { KINE_API } from '@/lib/gateway'
+import { kineFetch } from '@/lib/kine-fetch'
 
 interface Patient {
   id: number; numeroDossier: string; nom: string; prenom: string
@@ -38,12 +39,12 @@ export default function PatientsPage() {
   const [dHeure, setDHeure] = useState('')
 
   useEffect(() => {
-    fetch(`${API}/patients`, { cache: 'no-store' })
+    kineFetch(`${API}/patients`, { cache: 'no-store' })
       .then(r => r.json())
       .then((data: Patient[]) => setPatients(Array.isArray(data) ? data : []))
       .catch(() => setPatients([]))
 
-    fetch(`${API}/rendezvous`, { cache: 'no-store' })
+    kineFetch(`${API}/rendezvous`, { cache: 'no-store' })
       .then(r => r.json())
       .then((data: RendezVous[]) => setRdvs(Array.isArray(data) ? data : []))
       .catch(() => setRdvs([]))
@@ -71,7 +72,7 @@ export default function PatientsPage() {
     setRdvs(prev => prev.map(r => (r.id === rdvId ? { ...r, ...body } : r)))
     setMenuOpen(null)
     try {
-      await fetch(`${API}/rendezvous/${rdvId}`, {
+      await kineFetch(`${API}/rendezvous/${rdvId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),

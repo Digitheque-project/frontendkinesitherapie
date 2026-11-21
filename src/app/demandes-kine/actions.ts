@@ -6,7 +6,10 @@ import {
   findPatientByNumeroDossier,
   createPatient,
   createRendezVous,
+  updatePatient,
+  marquerDemandePlanifiee,
 } from '@/lib/api'
+import { getAuthToken } from '@/lib/auth-server'
 import { updateDemandeStatut } from '@/lib/prescriptionApi'
 
 export interface PlanifierInput {
@@ -42,7 +45,14 @@ export async function planifierRendezVous(
   try {
     // 1. Réutiliser le patient local s'il existe déjà (par numéro de dossier),
     //    sinon résoudre son identité via le service Accueil et le créer.
-    let patient = await findPatientByNumeroDossier(input.patientId)
+    // Jeton du soignant (cookie) : la passerelle l'exige sur /kine.
+    const jeton = await getAuthToken()
+    let patient = await findPatientByNumeroDossier(input.patientId, jeton)
+
+    // Patient dont une prise en charge précédente a été close : il revient.
+    if (patient && patient.statut === 'archive') {
+      patient = await updatePatient(patient.id, { statut: 'actif' }, jeton)
+    }
 
     if (!patient) {
       const acc = await getAccueilPatient(input.patientId)
@@ -63,7 +73,7 @@ export async function planifierRendezVous(
         nomMedecinPrescripteur: input.nomMedecinPrescripteur || '',
         statut: 'actif',
         dateAdmission: new Date().toLocaleDateString('sv-SE'),
-      })
+      }, jeton)
     }
 
     // 2. Créer le rendez-vous local rattaché au patient.
@@ -75,7 +85,14 @@ export async function planifierRendezVous(
       motif: input.motif || input.typeKine || 'Séance de kinésithérapie',
       statut: 'planifie',
       patientId: patient.id,
-    })
+    }, jeton)
+
+    // Lien demande ↔ patient dans le backend kiné (fin de prise en charge).
+    try {
+      await marquerDemandePlanifiee(input.prescriptionId, input.patientId, jeton)
+    } catch (e) {
+      console.error('[planifierRendezVous] Échec marquerDemandePlanifiee:', e)
+    }
 
     // 3. Best-effort : informer le service prescription que la demande est planifiée.
     try {

@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react'
 import AppShell from '@/components/layout/AppShell'
 import { useLanguage } from '@/context/LanguageContext'
 import { KINE_API } from '@/lib/gateway'
+import { kineFetch } from '@/lib/kine-fetch'
 
 const API = KINE_API
 
@@ -168,21 +169,21 @@ export default function RapportPage() {
   const [seances, setSeances] = useState<Seance[]>([])
 
   useEffect(() => {
-    fetch(`${API}/rendezvous`, { cache: 'no-store' })
+    kineFetch(`${API}/rendezvous`, { cache: 'no-store' })
       .then(r => r.json())
       .then((data: RendezVous[]) => setRdvs(Array.isArray(data) ? data : []))
       .catch(() => setRdvs([]))
   }, [])
 
   useEffect(() => {
-    fetch(`${API}/patients`, { cache: 'no-store' })
+    kineFetch(`${API}/patients`, { cache: 'no-store' })
       .then(r => r.json())
       .then((data: Patient[]) => setPatients(Array.isArray(data) ? data : []))
       .catch(() => setPatients([]))
   }, [])
 
   useEffect(() => {
-    fetch(`${API}/seances`, { cache: 'no-store' })
+    kineFetch(`${API}/seances`, { cache: 'no-store' })
       .then(r => r.json())
       .then((data: Seance[]) => setSeances(Array.isArray(data) ? data : []))
       .catch(() => setSeances([]))

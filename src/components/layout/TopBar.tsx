@@ -8,6 +8,7 @@ import { getUtilisateurConnecte } from '@/lib/utilisateur'
 import { useLogoAuthentifie } from '@/lib/use-logo-authentifie'
 import { KINE_API } from '@/lib/gateway'
 import PointServeur from "@/components/PointServeur";
+import { kineFetch } from '@/lib/kine-fetch'
 
 const API = KINE_API
 
@@ -108,7 +109,7 @@ export default function TopBar({
   const dernierNombre = useRef<number | null>(null)
 
   function fetchNotifs() {
-    fetch(`${API}/notifications`, { cache: 'no-store' })
+    kineFetch(`${API}/notifications`, { cache: 'no-store' })
       .then((r) => r.json())
       .then((d) => setNotifs(Array.isArray(d) ? d : []))
       .catch(() => {})
@@ -162,7 +163,7 @@ export default function TopBar({
 
   function marquerLue(n: NotificationKine) {
     if (!n.lue) {
-      fetch(`${API}/notifications/${n.id}/lire`, { method: 'PATCH' })
+      kineFetch(`${API}/notifications/${n.id}/lire`, { method: 'PATCH' })
         .then(() => fetchNotifs())
         .catch(() => {})
     }

@@ -1,12 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import AppShell from '@/components/layout/AppShell'
 import { getUtilisateurConnecte } from '@/lib/utilisateur'
 import { KINE_API } from '@/lib/gateway'
 import { libelleStatut } from '@/lib/libelle-statut';
+import { kineFetch } from '@/lib/kine-fetch'
+import { terminerPriseEnCharge } from '@/lib/api'
 
 const API = KINE_API
 
@@ -64,6 +66,25 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
   const [loading, setLoading]         = useState(true)
   const [valide, setValide]           = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const router = useRouter()
+  const [finEnCours, setFinEnCours] = useState(false)
+  const [erreurFin, setErreurFin] = useState('')
+
+  // Fin de la prise en charge : les demandes de kiné du patient passent à
+  // « terminée » (le médecin prescripteur en est informé) et il est archivé.
+  async function terminerLaPriseEnCharge() {
+    if (!patient || finEnCours) return
+    if (!window.confirm(`Terminer la prise en charge de ${patient.prenom} ${patient.nom} ? Le médecin prescripteur sera informé et le patient passera aux archives.`)) return
+    setFinEnCours(true)
+    setErreurFin('')
+    try {
+      await terminerPriseEnCharge(patient.id)
+      router.push('/patients')
+    } catch {
+      setErreurFin("La prise en charge n'a pas pu être terminée. Réessayez.")
+      setFinEnCours(false)
+    }
+  }
   const searchParams = useSearchParams()
   const from = searchParams.get('from')
 
@@ -94,7 +115,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
 
   // Chargement initial : patient (API) + brouillon local + historique + religion
   useEffect(() => {
-    fetch(API + '/patients/' + params.id)
+    kineFetch(API + '/patients/' + params.id)
       .then(r => r.json())
       .then(data => {
         if (data?.id) {
@@ -157,7 +178,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
     const [h, m] = rdvHeureDeb.split(':').map(Number)
     const heureFinCalc = String((h + 1) % 24).padStart(2, '0') + ':' + String(m).padStart(2, '0')
     try {
-      await fetch(API + '/rendezvous', {
+      await kineFetch(API + '/rendezvous', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -191,7 +212,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
     setShowConfirm(false)
 
     const dateVisite = new Date().toLocaleDateString('sv-SE')
-    fetch(API + '/patients/' + params.id, {
+    kineFetch(API + '/patients/' + params.id, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ dateDerniereVisite: dateVisite + ' ' + heureFinFinale }),
@@ -199,14 +220,14 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
       setPatient(prev => prev ? { ...prev, dateDerniereVisite: dateVisite + ' ' + heureFinFinale } : prev)
     }).catch(() => {})
     // Marquer le rendez-vous du jour comme effectue (pour les rapports)
-    fetch(API + '/rendezvous')
+    kineFetch(API + '/rendezvous')
       .then(r => r.json())
       .then((all: any[]) => {
         const rdvDuJour = Array.isArray(all)
           ? all.find(r => String(r.patientId) === String(params.id) && r.date === dateVisite && r.statut === 'planifie')
           : null
         if (rdvDuJour) {
-          fetch(API + '/rendezvous/' + rdvDuJour.id, {
+          kineFetch(API + '/rendezvous/' + rdvDuJour.id, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ statut: 'effectue' }),
@@ -216,7 +237,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
       .catch(() => {})
 
     // Enregistrement durable de la seance validee (visible dans Archives)
-    fetch(API + '/seances', {
+    kineFetch(API + '/seances', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -428,6 +449,14 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
                   <p className="text-xs font-semibold text-emerald-700">RDV planifie le {new Date(rdvDate + 'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})} a {rdvHeureDeb}</p>
                 </div>
               )}
+              {patient?.statut !== 'archive' && (
+                <button onClick={terminerLaPriseEnCharge} disabled={finEnCours}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-emerald-300 text-emerald-700 font-bold text-sm hover:bg-emerald-50 transition-all disabled:opacity-50">
+                  <span className="material-symbols-outlined text-lg">task_alt</span>
+                  {finEnCours ? 'Fin en cours…' : 'Terminer la prise en charge'}
+                </button>
+              )}
+              {erreurFin && <p className="text-xs font-semibold text-red-600">{erreurFin}</p>}
               {from === 'archives' ? (
                 <Link href="/archives" className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-[#E2E8F0] text-[#475569] font-bold text-sm hover:bg-gray-50 transition-all"><span className="material-symbols-outlined text-lg">arrow_back</span>Retour aux archives</Link>
               ) : from === 'calendrier' ? (
