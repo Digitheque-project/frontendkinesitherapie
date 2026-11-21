@@ -18,22 +18,24 @@ interface Patient {
   dateNaissance: string; sexe: string; adresse: string; telephone: string
   diagnostic: string; statut: string; dateAdmission: string
   dateDerniereVisite: string; antecedents: string
+  objectifs?: string | null; religion?: string | null; histoireMaladie?: string | null
+  bilanFonctionnel?: string | null; bilanIncapacite?: string | null; diagnosticKine?: string | null
 }
+// Séance enregistrée dans le backend (historique durable, tous postes).
 interface SeanceHistorique {
-  date: string; heureDebut: string; heureFin: string
-  traitement: string; evolution: string; conseil: string
+  id: number; date: string; heureDebut: string; heureFin: string; type?: string | null
+  traitement: string; evolution: string; conseil: string; kine?: string | null
+}
+
+const dateFr = (iso?: string | null) => {
+  if (!iso) return '—'
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso)
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : iso
 }
 
 function getHeureActuelle() {
   const now = new Date()
   return String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0')
-}
-
-function getNow() {
-  const now = new Date()
-  const date = now.getDate() + ' ' + now.toLocaleDateString('fr-FR',{month:'long'}) + ' ' + now.getFullYear()
-  const heure = String(now.getHours()).padStart(2,'0') + 'h' + String(now.getMinutes()).padStart(2,'0')
-  return { date, heure }
 }
 
 const TYPES = ['consultation','soin']
@@ -64,7 +66,9 @@ function SectionSaisie({ label, icon, value, onChange, bgClass, borderClass, tit
 export default function PatientProfilePage({ params }: { params: { id: string } }) {
   const [patient, setPatient]         = useState<Patient | null>(null)
   const [loading, setLoading]         = useState(true)
-  const [valide, setValide]           = useState(false)
+  // Chaque séance validée part dans l'historique et le formulaire se vide :
+  // plus de verrouillage de la page.
+  const valide = false
   const [showConfirm, setShowConfirm] = useState(false)
   const router = useRouter()
   const [finEnCours, setFinEnCours] = useState(false)
@@ -89,7 +93,6 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
   const from = searchParams.get('from')
 
   const [heureDebut, setHeureDebut]     = useState('')
-  const [heureFin, setHeureFin]         = useState('')
   const [typeRdv, setTypeRdv]           = useState('')
   const [showTypeMenu, setShowTypeMenu] = useState(false)
   const [religion, setReligion]         = useState('')
@@ -107,6 +110,9 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
   const [evolution, setEvolution]               = useState('')
   const [conseil, setConseil]                   = useState('')
   const [seancesHistorique, setSeancesHistorique] = useState<SeanceHistorique[]>([])
+  const [enregistrement, setEnregistrement] = useState(false)
+  const [messageSeance, setMessageSeance] = useState<{ ok: boolean; texte: string } | null>(null)
+  const [bilanEnregistre, setBilanEnregistre] = useState<'' | 'ok' | 'erreur' | 'encours'>('')
   const [showRdvModal, setShowRdvModal]         = useState(false)
   const [rdvDate, setRdvDate]                   = useState('')
   const [rdvHeureDeb, setRdvHeureDeb]           = useState('')
@@ -115,62 +121,99 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
 
   // Chargement initial : patient (API) + brouillon local + historique + religion
   useEffect(() => {
+    // Brouillon local : seulement ce qui n'est pas encore enregistré.
+    let d: Record<string, string> = {}
+    try { d = JSON.parse(localStorage.getItem('brouillon_patient_' + params.id) || '{}') } catch {}
+
     kineFetch(API + '/patients/' + params.id)
       .then(r => r.json())
-      .then(data => {
+      .then((data: Patient) => {
         if (data?.id) {
           setPatient(data)
-          const savedDraft = localStorage.getItem('brouillon_patient_' + params.id)
-          let draftAntecedents = null
-          if (savedDraft) { try { draftAntecedents = JSON.parse(savedDraft).antecedents } catch {} }
-          setAntecedents(draftAntecedents || data.antecedents || '')
+          // Bilan : celui du dossier (backend), sauf modification non encore enregistrée.
+          setReligion(d.religion ?? data.religion ?? '')
+          setObjectif(d.objectif ?? data.objectifs ?? '')
+          setAntecedents(d.antecedents ?? data.antecedents ?? '')
+          setHistorieMaladie(d.historieMaladie ?? data.histoireMaladie ?? '')
+          setBilanFonctionnel(d.bilanFonctionnel ?? data.bilanFonctionnel ?? '')
+          setBilanIncapacite(d.bilanIncapacite ?? data.bilanIncapacite ?? '')
+          setDiagnosticKine(d.diagnosticKine ?? data.diagnosticKine ?? '')
         }
         setLoading(false)
       })
       .catch(() => setLoading(false))
 
-    const savedReligion = localStorage.getItem('religion_patient_' + params.id)
-    if (savedReligion) setReligion(savedReligion)
+    chargerHistorique()
 
-    const savedHistorique = localStorage.getItem('historique_patient_' + params.id)
-    if (savedHistorique) {
-      try { setSeancesHistorique(JSON.parse(savedHistorique)) } catch {}
-    }
-
-    const savedDraft = localStorage.getItem('brouillon_patient_' + params.id)
-    if (savedDraft) {
-      try {
-        const d = JSON.parse(savedDraft)
-        if (d.heureDebut) { setHeureDebut(d.heureDebut) } else { setHeureDebut(getHeureActuelle()) }
-        if (d.heureFin) setHeureFin(d.heureFin)
-        if (d.typeRdv) setTypeRdv(d.typeRdv)
-        if (d.objectif) setObjectif(d.objectif)
-        if (d.historieMaladie) setHistorieMaladie(d.historieMaladie)
-        if (d.bilanFonctionnel) setBilanFonctionnel(d.bilanFonctionnel)
-        if (d.bilanIncapacite) setBilanIncapacite(d.bilanIncapacite)
-        if (d.diagnosticKine) setDiagnosticKine(d.diagnosticKine)
-        if (d.traitement) setTraitement(d.traitement)
-        if (d.evolution) setEvolution(d.evolution)
-        if (d.conseil) setConseil(d.conseil)
-      } catch {}
-    } else {
-      setHeureDebut(getHeureActuelle())
-    }
+    setHeureDebut(d.heureDebut || getHeureActuelle())
+    if (d.typeRdv) setTypeRdv(d.typeRdv)
+    if (d.traitement) setTraitement(d.traitement)
+    if (d.evolution) setEvolution(d.evolution)
+    if (d.conseil) setConseil(d.conseil)
+    // Anciennes clés locales, remplacées par le backend.
+    try {
+      localStorage.removeItem('historique_patient_' + params.id)
+      localStorage.removeItem('religion_patient_' + params.id)
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id])
+
+  function chargerHistorique() {
+    kineFetch(API + '/seances?patientId=' + params.id, { cache: 'no-store' })
+      .then(r => (r.ok ? r.json() : []))
+      .then((liste: SeanceHistorique[]) => setSeancesHistorique(Array.isArray(liste) ? liste : []))
+      .catch(() => {})
+  }
+
+  const champsBilan = () => ({
+    religion, objectifs: objectif, antecedents, histoireMaladie: historieMaladie,
+    bilanFonctionnel, bilanIncapacite, diagnosticKine,
+  })
+
+  async function enregistrerBilan(): Promise<boolean> {
+    setBilanEnregistre('encours')
+    try {
+      const r = await kineFetch(API + '/patients/' + params.id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(champsBilan()),
+      })
+      if (!r.ok) throw new Error()
+      setBilanEnregistre('ok')
+      viderBrouillon(['religion', 'objectif', 'antecedents', 'historieMaladie', 'bilanFonctionnel', 'bilanIncapacite', 'diagnosticKine'])
+      return true
+    } catch {
+      setBilanEnregistre('erreur')
+      return false
+    }
+  }
+
+  function viderBrouillon(cles: string[]) {
+    try {
+      const d = JSON.parse(localStorage.getItem('brouillon_patient_' + params.id) || '{}')
+      for (const k of cles) delete d[k]
+      localStorage.setItem('brouillon_patient_' + params.id, JSON.stringify(d))
+    } catch {}
+  }
 
   // Sauvegarde automatique de toutes les cartes a chaque modification
   useEffect(() => {
-    const draft = {
-      heureDebut, heureFin, typeRdv, objectif, antecedents,
-      historieMaladie, bilanFonctionnel, bilanIncapacite, diagnosticKine,
-      traitement, evolution, conseil
+    if (loading || !patient) return
+    // Seules les valeurs différentes du dossier enregistré vont au brouillon.
+    const draft: Record<string, string> = { heureDebut, typeRdv, traitement, evolution, conseil }
+    const enregistre: Record<string, string> = {
+      religion: patient.religion ?? '', objectif: patient.objectifs ?? '', antecedents: patient.antecedents ?? '',
+      historieMaladie: patient.histoireMaladie ?? '', bilanFonctionnel: patient.bilanFonctionnel ?? '',
+      bilanIncapacite: patient.bilanIncapacite ?? '', diagnosticKine: patient.diagnosticKine ?? '',
     }
-    localStorage.setItem('brouillon_patient_' + params.id, JSON.stringify(draft))
-  }, [heureDebut, heureFin, typeRdv, objectif, antecedents, historieMaladie, bilanFonctionnel, bilanIncapacite, diagnosticKine, traitement, evolution, conseil, params.id])
+    const saisi: Record<string, string> = { religion, objectif, antecedents, historieMaladie, bilanFonctionnel, bilanIncapacite, diagnosticKine }
+    for (const k of Object.keys(saisi)) if (saisi[k] !== enregistre[k]) draft[k] = saisi[k]
+    try { localStorage.setItem('brouillon_patient_' + params.id, JSON.stringify(draft)) } catch {}
+  }, [loading, patient, heureDebut, typeRdv, objectif, antecedents, historieMaladie, bilanFonctionnel, bilanIncapacite, diagnosticKine, traitement, evolution, conseil, religion, params.id])
 
   function handleReligionChange(v: string) {
     setReligion(v)
-    localStorage.setItem('religion_patient_' + params.id, v)
+    setBilanEnregistre('')
   }
 
   async function planifierRdv() {
@@ -199,26 +242,66 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
     }
   }
 
-  function confirmerValidation() {
-    const { date } = getNow()
+  async function confirmerValidation() {
+    if (enregistrement) return
+    setEnregistrement(true)
+    setMessageSeance(null)
     const heureFinFinale = getHeureActuelle()
-    setHeureFin(heureFinFinale)
     const dateIso = new Date().toLocaleDateString('sv-SE')
-    const nouvelleSeance: SeanceHistorique = { date, heureDebut, heureFin: heureFinFinale, traitement, evolution, conseil }
-    const nouvelHistorique = [nouvelleSeance, ...seancesHistorique]
-    setSeancesHistorique(nouvelHistorique)
-    localStorage.setItem('historique_patient_' + params.id, JSON.stringify(nouvelHistorique))
-    setValide(true)
-    setShowConfirm(false)
 
-    const dateVisite = new Date().toLocaleDateString('sv-SE')
-    kineFetch(API + '/patients/' + params.id, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ dateDerniereVisite: dateVisite + ' ' + heureFinFinale }),
-    }).then(() => {
-      setPatient(prev => prev ? { ...prev, dateDerniereVisite: dateVisite + ' ' + heureFinFinale } : prev)
-    }).catch(() => {})
+    // 1. La séance elle-même : sans elle, rien n'est validé.
+    try {
+      const r = await kineFetch(API + '/seances', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          patientId: Number(params.id),
+          date: dateIso,
+          heureDebut,
+          heureFin: heureFinFinale,
+          type: typeRdv || null,
+          diagnosticKine,
+          bilan: [bilanFonctionnel, bilanIncapacite].filter(Boolean).join('\n\n') || null,
+          traitement,
+          evolution,
+          conseil,
+          kine: getUtilisateurConnecte().displayName,
+        }),
+      })
+      if (!r.ok) throw new Error()
+    } catch {
+      setEnregistrement(false)
+      setShowConfirm(false)
+      setMessageSeance({ ok: false, texte: "La séance n'a pas pu être enregistrée. Vos saisies sont conservées : réessayez." })
+      return
+    }
+
+    // 2. Bilan et date de dernière visite sur le dossier du patient.
+    const dateVisite = dateIso
+    try {
+      const r = await kineFetch(API + '/patients/' + params.id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...champsBilan(), dateDerniereVisite: dateVisite + ' ' + heureFinFinale }),
+      })
+      if (r.ok) {
+        const maj = await r.json().catch(() => null)
+        if (maj?.id) setPatient(maj)
+        setBilanEnregistre('ok')
+      }
+    } catch {}
+
+    // 3. Formulaire vidé pour la séance suivante ; le bilan reste.
+    setTraitement('')
+    setEvolution('')
+    setConseil('')
+    setTypeRdv('')
+    setHeureDebut(getHeureActuelle())
+    viderBrouillon(['heureDebut', 'typeRdv', 'traitement', 'evolution', 'conseil', 'religion', 'objectif', 'antecedents', 'historieMaladie', 'bilanFonctionnel', 'bilanIncapacite', 'diagnosticKine'])
+    setShowConfirm(false)
+    setEnregistrement(false)
+    setMessageSeance({ ok: true, texte: `Séance du ${dateFr(dateIso)} (${heureDebut.replace(':', 'h')}-${heureFinFinale.replace(':', 'h')}) enregistrée dans l'historique.` })
+    chargerHistorique()
     // Marquer le rendez-vous du jour comme effectue (pour les rapports)
     kineFetch(API + '/rendezvous')
       .then(r => r.json())
@@ -235,22 +318,6 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
         }
       })
       .catch(() => {})
-
-    // Enregistrement durable de la seance validee (visible dans Archives)
-    kineFetch(API + '/seances', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        patientId: Number(params.id),
-        date: dateIso,
-        heureDebut,
-        heureFin: heureFinFinale,
-        traitement,
-        evolution,
-        conseil,
-        kine: getUtilisateurConnecte().displayName,
-      }),
-    }).catch(() => {})
   }
 
   if (loading) return (
@@ -283,12 +350,10 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
         <span className="text-on-surface font-semibold">{nomComplet}</span>
       </nav>
 
-      {valide && (
-        <div className="mb-6 flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-xl px-5 py-4">
-          <span className="material-symbols-outlined text-emerald-500 text-2xl">check_circle</span>
-          <div>
-            <p className="font-bold text-emerald-700">Dossier valide et enregistre dans l'historique !</p>
-          </div>
+      {messageSeance && (
+        <div className={'mb-6 flex items-center gap-3 rounded-xl px-5 py-4 border ' + (messageSeance.ok ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200')}>
+          <span className={'material-symbols-outlined text-2xl ' + (messageSeance.ok ? 'text-emerald-500' : 'text-red-500')}>{messageSeance.ok ? 'check_circle' : 'error'}</span>
+          <p className={'font-bold ' + (messageSeance.ok ? 'text-emerald-700' : 'text-red-700')}>{messageSeance.texte}</p>
         </div>
       )}
 
@@ -378,8 +443,8 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
         </div>
 
         <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-6">
-          <h3 className="text-base font-black text-[#0F172A] flex items-center gap-2 mb-5"><span className="material-symbols-outlined text-yellow-600">flag</span>Objectif presempteur</h3>
-          <textarea value={objectif} onChange={e => !valide && setObjectif(e.target.value)} rows={3} disabled={valide} className={'w-full p-3 rounded-xl border text-sm resize-none outline-none ' + (valide ? 'bg-[#F8F9FB] border-[#E2E8F0] text-[#64748B] cursor-not-allowed' : 'bg-white border-[#E2E8F0] focus:border-[#006A8C] focus:ring-2 focus:ring-[#006A8C]/20')} placeholder="Decrire objectif therapeutique presempteur..." />
+          <h3 className="text-base font-black text-[#0F172A] flex items-center gap-2 mb-5"><span className="material-symbols-outlined text-yellow-600">flag</span>Objectif du prescripteur</h3>
+          <textarea value={objectif} onChange={e => !valide && setObjectif(e.target.value)} rows={3} disabled={valide} className={'w-full p-3 rounded-xl border text-sm resize-none outline-none ' + (valide ? 'bg-[#F8F9FB] border-[#E2E8F0] text-[#64748B] cursor-not-allowed' : 'bg-white border-[#E2E8F0] focus:border-[#006A8C] focus:ring-2 focus:ring-[#006A8C]/20')} placeholder="Objectif thérapeutique fixé par le prescripteur..." />
         </div>
 
         <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-6">
@@ -395,6 +460,14 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
         <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-6">
           <h3 className="text-base font-black text-[#0F172A] flex items-center gap-2 mb-5"><span className="material-symbols-outlined text-blue-600">diagnosis</span>Diagnostic kinesitherapique</h3>
           <textarea value={diagnosticKine} onChange={e => !valide && setDiagnosticKine(e.target.value)} rows={3} disabled={valide} className={'w-full p-3 rounded-xl border text-sm resize-none outline-none ' + (valide ? 'bg-[#F8F9FB] border-[#E2E8F0] text-[#64748B] cursor-not-allowed' : 'bg-white border-[#E2E8F0] focus:border-[#006A8C] focus:ring-2 focus:ring-[#006A8C]/20')} placeholder="Diagnostic etabli par le kinesitherapeute..." />
+          <div className="mt-4 flex items-center gap-3">
+            <button onClick={enregistrerBilan} disabled={bilanEnregistre === 'encours'}
+              className="px-4 py-2 rounded-xl border border-[#006A8C] text-[#006A8C] font-bold text-sm hover:bg-[#F0F7FF] disabled:opacity-50">
+              {bilanEnregistre === 'encours' ? 'Enregistrement…' : 'Enregistrer le bilan'}
+            </button>
+            {bilanEnregistre === 'ok' && <span className="text-xs font-semibold text-emerald-600">Bilan enregistré dans le dossier du patient.</span>}
+            {bilanEnregistre === 'erreur' && <span className="text-xs font-semibold text-red-600">Échec de l'enregistrement, réessayez.</span>}
+          </div>
         </div>
 
         <SectionSaisie label="Traitement" icon="vaccines"
@@ -421,11 +494,11 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
 
           {!valide ? (
             <div className="bg-white rounded-2xl border border-[#F1F5F9] shadow-[0px_4px_10px_rgba(0,0,0,0.02)] p-6 flex flex-col items-center justify-center gap-3">
-              <p className="text-sm text-on-surface-variant text-center">Une fois valide, le dossier sera verrouille et ajoute a l'historique.</p>
-              <button onClick={() => setShowConfirm(true)}
-                className="flex items-center gap-2 px-8 py-3 rounded-xl bg-emerald-500 text-white font-bold text-base shadow-lg hover:bg-emerald-600 transition-all">
+              <p className="text-sm text-on-surface-variant text-center">La séance validée est ajoutée à l'historique du patient ; le formulaire se vide pour la séance suivante.</p>
+              <button onClick={() => setShowConfirm(true)} disabled={enregistrement || !(traitement.trim() || evolution.trim() || conseil.trim())}
+                className="flex items-center gap-2 px-8 py-3 rounded-xl bg-emerald-500 text-white font-bold text-base shadow-lg hover:bg-emerald-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed">
                 <span className="material-symbols-outlined">check_circle</span>
-                Valider le dossier
+                Valider la séance
               </button>
             </div>
           ) : (
@@ -532,15 +605,15 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
               <span className="material-symbols-outlined text-emerald-500 text-3xl">check_circle</span>
             </div>
             <h3 className="text-lg font-bold text-on-surface mb-2">Confirmer la validation</h3>
-            <p className="text-sm text-on-surface-variant mb-6">Une fois valide, le dossier sera verrouille et ajoute a l'historique. Cette action est irreversible.</p>
+            <p className="text-sm text-on-surface-variant mb-6">La séance (traitement, évolution, conseil) sera enregistrée dans l'historique du patient et ne pourra plus être modifiée.</p>
             <div className="flex gap-3">
               <button onClick={() => setShowConfirm(false)}
                 className="flex-1 px-4 py-2.5 rounded-xl border border-outline-variant text-on-surface font-semibold text-sm hover:bg-surface-container-low">
                 Annuler
               </button>
-              <button onClick={confirmerValidation}
-                className="flex-1 px-4 py-2.5 rounded-xl bg-emerald-500 text-white font-semibold text-sm hover:bg-emerald-600 shadow-sm">
-                Confirmer
+              <button onClick={confirmerValidation} disabled={enregistrement}
+                className="flex-1 px-4 py-2.5 rounded-xl bg-emerald-500 text-white font-semibold text-sm hover:bg-emerald-600 shadow-sm disabled:opacity-50">
+                {enregistrement ? 'Enregistrement…' : 'Confirmer'}
               </button>
             </div>
           </div>
@@ -563,11 +636,13 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
               <p className="text-sm text-on-surface-variant italic">Aucune seance enregistree pour le moment.</p>
             ) : (
               <div className="space-y-3">
-                {seancesHistorique.map((s, i) => (
-                  <div key={i} className="bg-emerald-50 rounded-xl p-4 border border-emerald-200">
+                {seancesHistorique.map((s) => (
+                  <div key={s.id} className="bg-emerald-50 rounded-xl p-4 border border-emerald-200">
                     <p className="text-xs font-bold uppercase tracking-widest text-emerald-700 mb-2 flex items-center gap-1.5">
-                      <span className="material-symbols-outlined text-sm">event</span>{s.date} — {(s.heureDebut || '?').replace(':','h')}-{(s.heureFin || '?').replace(':','h')}
+                      <span className="material-symbols-outlined text-sm">event</span>{dateFr(s.date)} — {(s.heureDebut || '?').replace(':','h')}-{(s.heureFin || '?').replace(':','h')}
+                      {s.type ? ` · ${s.type}` : ''}
                     </p>
+                    {s.kine && <p className="text-[11px] text-emerald-700 mb-2">Par {s.kine}</p>}
                     <div className="space-y-2">
                       {s.traitement && (<div><p className="text-[11px] font-semibold text-emerald-600">Traitement</p><p className="text-sm text-on-surface">{s.traitement}</p></div>)}
                       {s.evolution && (<div><p className="text-[11px] font-semibold text-emerald-600">Evolution et suivi</p><p className="text-sm text-on-surface">{s.evolution}</p></div>)}
