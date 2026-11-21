@@ -10,7 +10,7 @@ import {
   marquerDemandePlanifiee,
 } from '@/lib/api'
 import { getAuthToken } from '@/lib/auth-server'
-import { updateDemandeStatut } from '@/lib/prescriptionApi'
+import { updateDemandeStatut, updateDemandeRdv } from '@/lib/prescriptionApi'
 
 export interface PlanifierInput {
   prescriptionId: string
@@ -94,7 +94,12 @@ export async function planifierRendezVous(
       console.error('[planifierRendezVous] Échec marquerDemandePlanifiee:', e)
     }
 
-    // 3. Best-effort : informer le service prescription que la demande est planifiée.
+    // 3. Best-effort : informer le service prescription de la date, puis du statut.
+    try {
+      await updateDemandeRdv(input.prescriptionId, input.date, input.heureDebut)
+    } catch (e) {
+      console.error('[planifierRendezVous] Échec updateDemandeRdv:', e)
+    }
     try {
       await updateDemandeStatut(
         input.prescriptionId,

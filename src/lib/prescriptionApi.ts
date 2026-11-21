@@ -32,6 +32,19 @@ export async function getDemandesKine(chuId: string, serviceId: string) {
   return demandes;
 }
 
+// Transmet la date du rendez-vous au service Prescription (le prescripteur la voit).
+export async function updateDemandeRdv(id: string, rdvDate: string, rdvTime: string) {
+  const response = await fetch(`${PRESCRIPTION_API}/kine/${id}/rdv`, {
+    method: 'PATCH',
+    headers: await prescriptionHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ rdvDate, rdvTime }),
+    cache: 'no-store',
+  });
+  if (!response.ok) {
+    throw new Error(`Échec de la transmission du rendez-vous (HTTP ${response.status})`);
+  }
+}
+
 // Met à jour le statut d'une demande de kiné (best-effort : renvoie l'info au
 // service prescription une fois le rendez-vous planifié).
 export async function updateDemandeStatut(

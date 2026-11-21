@@ -145,7 +145,7 @@ export default function ArchivesPage() {
                   <div key={s.id} className="bg-[#F8F9FB] rounded-2xl border border-[#F1F5F9] p-5">
                     <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[#E2E8F0]">
                       <span className="material-symbols-outlined text-[#006A8C] text-lg">event</span>
-                      <span className="text-sm font-bold text-[#0F172A]">{s.date}</span>
+                      <span className="text-sm font-bold text-[#0F172A]">{s.date ? s.date.slice(0, 10).split('-').reverse().join('/') : '—'}</span>
                       <span className="text-sm text-[#94A3B8]">·</span>
                       <span className="text-sm font-mono text-[#64748B]">{(s.heureDebut || '').substring(0,5)} - {(s.heureFin || '').substring(0,5)}</span>
                     </div>
@@ -154,7 +154,8 @@ export default function ArchivesPage() {
                       <ChampDetail label="Dr prescripteur" value={(p as any)?.nomMedecinPrescripteur} />
                       <ChampDetail label="Objectif prescripteur" value={(p as any)?.objectifs} />
                       <ChampDetail label="Diagnostic" value={p?.diagnostic} />
-                      <ChampDetail label="Bilan kinésithérapie" value={null} enAttente />
+                      <ChampDetail label="Diagnostic kinésithérapique" value={(s as any).diagnosticKine || (p as any)?.diagnosticKine} />
+                      <ChampDetail label="Bilan kinésithérapie" value={(s as any).bilan || [(p as any)?.bilanFonctionnel, (p as any)?.bilanIncapacite].filter(Boolean).join(' — ') || null} />
                       <ChampDetail label="Traitement" value={s.traitement} />
                       <ChampDetail label="Évolution / suivi" value={s.evolution} />
                       <ChampDetail label="Conseil" value={s.conseil} full />

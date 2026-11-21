@@ -51,7 +51,8 @@ export function getUtilisateurConnecte(): UtilisateurConnecte {
     const token = localStorage.getItem('authToken')
     if (!token) return defaut
     const payload = token.split('.')[1]
-    const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'))
+    const binaire = atob(payload.replace(/-/g, '+').replace(/_/g, '/'))
+    const decoded = new TextDecoder('utf-8').decode(Uint8Array.from(binaire, (c) => c.charCodeAt(0)))
     const data = JSON.parse(decoded)
 
     const prenom = (data.firstname || '').trim()

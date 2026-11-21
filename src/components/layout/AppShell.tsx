@@ -19,6 +19,23 @@ const AUTH_URL = LOGIN_URL
 const USER_API_URL = USER_API
 const TOKEN_KEY = 'authToken'
 
+// Arrivée depuis le portail (?accessToken=…) : le jeton est rangé dès le
+// chargement, AVANT que les pages lancent leurs appels. Rangé seulement dans
+// l'effet ci-dessous, il arrivait trop tard : la première page recevait des
+// 401 (tableau de bord vide jusqu'au rechargement).
+if (typeof window !== 'undefined') {
+  try {
+    const params = new URLSearchParams(window.location.search)
+    const t = params.get('accessToken')
+    if (t) {
+      localStorage.setItem(TOKEN_KEY, t)
+      document.cookie = `authToken=${t}; path=/; SameSite=Lax`
+      const sid = params.get('serviceId')
+      if (sid) localStorage.setItem('serviceId', sid)
+    }
+  } catch {}
+}
+
 function deconnecter(redirect = true) {
   localStorage.removeItem(TOKEN_KEY)
   localStorage.removeItem('serviceId')

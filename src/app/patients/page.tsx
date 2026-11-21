@@ -144,7 +144,7 @@ export default function PatientsPage() {
                   <div className="min-w-0 md:w-52 md:flex-shrink-0">
                     <p className="font-bold text-[#0F172A]">{p.prenom} {p.nom}</p>
                     <p className="text-xs text-on-surface-variant">
-                      {p.dateNaissance} {p.sexe ? '- ' + (p.sexe === 'M' ? t('cal_homme') : t('cal_femme')) : ''}
+                      {p.dateNaissance ? p.dateNaissance.slice(0, 10).split('-').reverse().join('/') : ''} {p.sexe ? '- ' + (p.sexe === 'M' ? t('cal_homme') : t('cal_femme')) : ''}
                     </p>
                   </div>
 

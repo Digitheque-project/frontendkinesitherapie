@@ -8,7 +8,7 @@ import { createPortal } from "react-dom";
  * de page : on ouvre la liste des demandes de ce service. Enregistré une seule fois,
  * même si le composant est affiché à plusieurs endroits.
  */
-const PAGE_DES_NOTIFICATIONS = "/demandes-kine";
+const PAGE_DES_NOTIFICATIONS = "/prescriptions";
 if (typeof window !== "undefined") {
   const w = window as unknown as { __chuOuvertureNotif?: boolean };
   if (!w.__chuOuvertureNotif) {

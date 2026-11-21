@@ -307,7 +307,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
       .then(r => r.json())
       .then((all: any[]) => {
         const rdvDuJour = Array.isArray(all)
-          ? all.find(r => String(r.patientId) === String(params.id) && r.date === dateVisite && r.statut === 'planifie')
+          ? all.find(r => String(r.patientId) === String(params.id) && r.date === dateVisite && ['planifie', 'en_cours'].includes(r.statut))
           : null
         if (rdvDuJour) {
           kineFetch(API + '/rendezvous/' + rdvDuJour.id, {
@@ -359,7 +359,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
 
       <section className="relative bg-gradient-to-r from-[#004A66] to-[#006A8C] rounded-2xl shadow-sm p-6 mb-6 text-white">
         <button onClick={() => setShowHistorique(true)}
-          className="absolute -top-3 right-6 flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm px-4 py-2 rounded-full shadow-lg border-2 border-white transition-all">
+          className="absolute -bottom-4 right-6 flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm px-4 py-2 rounded-full shadow-lg border-2 border-white transition-all">
           <span className="material-symbols-outlined text-base">history</span>
           Historique
           {seancesHistorique.length > 0 && (
@@ -385,7 +385,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5 border-t border-white/20 pt-4">
               <div>
                 <p className="text-xs font-semibold text-teal-100 uppercase tracking-widest">Date de naissance</p>
-                <p className="text-sm font-bold text-white mt-1">{patient.dateNaissance || 'N/A'}</p>
+                <p className="text-sm font-bold text-white mt-1">{patient.dateNaissance ? dateFr(patient.dateNaissance) : 'N/A'}</p>
               </div>
               <div>
                 <p className="text-xs font-semibold text-teal-100 uppercase tracking-widest">Religion</p>
@@ -400,7 +400,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
               </div>
               <div>
                 <p className="text-xs font-semibold text-teal-100 uppercase tracking-widest">Admission</p>
-                <p className="text-sm font-bold text-white mt-1">{patient.dateAdmission || 'N/A'}</p>
+                <p className="text-sm font-bold text-white mt-1">{patient.dateAdmission ? dateFr(patient.dateAdmission) : 'N/A'}</p>
               </div>
             </div>
           </div>
