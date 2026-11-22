@@ -114,11 +114,13 @@ function AppShellInner({
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {
-        if (!res.ok) {
+        // Seul un vrai refus déconnecte. Une panne passagère (502 au réveil
+        // d'un service Render) renvoyait au portail avec un jeton valide.
+        if (res.status === 401 || res.status === 403) {
           deconnecter()
           return
         }
-        tokenDejaVerifie = token
+        if (res.ok) tokenDejaVerifie = token
         setChecking(false)
       })
       .catch(() => {
