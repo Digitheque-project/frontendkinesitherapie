@@ -151,9 +151,9 @@ export default function ArchivesPage() {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <ChampDetail label="Dr prescripteur" value={(p as any)?.nomMedecinPrescripteur} />
-                      <ChampDetail label="Objectif prescripteur" value={(p as any)?.objectifs} />
-                      <ChampDetail label="Diagnostic" value={p?.diagnostic} />
+                      <ChampDetail label="Dr prescripteur" value={(s as any).nomMedecinPrescripteur || (p as any)?.nomMedecinPrescripteur} />
+                      <ChampDetail label="Objectif prescripteur" value={(s as any).objectifs || (p as any)?.objectifs} />
+                      <ChampDetail label="Diagnostic" value={(s as any).diagnostic || p?.diagnostic} />
                       <ChampDetail label="Diagnostic kinésithérapique" value={(s as any).diagnosticKine || (p as any)?.diagnosticKine} />
                       <ChampDetail label="Bilan kinésithérapie" value={(s as any).bilan || [(p as any)?.bilanFonctionnel, (p as any)?.bilanIncapacite].filter(Boolean).join(' — ') || null} />
                       <ChampDetail label="Traitement" value={s.traitement} />

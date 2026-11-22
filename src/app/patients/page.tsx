@@ -164,7 +164,7 @@ export default function PatientsPage() {
 
                   <div className="md:flex-shrink-0 md:w-32">
                     <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Dernière visite</p>
-                    <p className="text-xs text-on-surface-variant">{p.dateDerniereVisite || '-'}</p>
+                    <p className="text-xs text-on-surface-variant">{p.dateDerniereVisite ? p.dateDerniereVisite.replace(/^(\d{4})-(\d{2})-(\d{2})/, '$3/$2/$1') : '-'}</p>
                   </div>
 
                   <div className="relative md:flex-shrink-0">
