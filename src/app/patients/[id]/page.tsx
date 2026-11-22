@@ -396,7 +396,7 @@ export default function PatientProfilePage({ params }: { params: { id: string } 
               </div>
               <div>
                 <p className="text-xs font-semibold text-teal-100 uppercase tracking-widest">Telephone</p>
-                <p className="text-sm font-bold text-white mt-1">{patient.telephone || 'N/A'}</p>
+                <p className="text-sm font-bold text-white mt-1">{patient.telephone || 'Non renseigné'}</p>
               </div>
               <div>
                 <p className="text-xs font-semibold text-teal-100 uppercase tracking-widest">Admission</p>

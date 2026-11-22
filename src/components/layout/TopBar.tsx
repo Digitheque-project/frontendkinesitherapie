@@ -4,13 +4,14 @@ import { PastilleAutresServices } from "@/components/ActionsCompte";
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/context/LanguageContext'
-import { getUtilisateurConnecte } from '@/lib/utilisateur'
+import { getUtilisateurConnecte, utilisateurVide } from '@/lib/utilisateur'
 import { useLogoAuthentifie } from '@/lib/use-logo-authentifie'
 import { KINE_API } from '@/lib/gateway'
 import PointServeur from "@/components/PointServeur";
 import { kineFetch } from '@/lib/kine-fetch'
 
 const API = KINE_API
+const CLE_VUES = 'kineNotifsVues'
 
 interface NotificationKine {
   id: number
@@ -94,7 +95,7 @@ export default function TopBar({
   const router = useRouter()
   const placeholder = searchPlaceholder || t('topbar_rechercher')
 
-  const [utilisateur, setUtilisateur] = useState(getUtilisateurConnecte())
+  const [utilisateur, setUtilisateur] = useState(utilisateurVide)  // lu après le montage : sinon rendu serveur ≠ navigateur (erreur React #418)
   const [jetonLogo, setJetonLogo] = useState<string | null>(null)
   useEffect(() => {
     try {
@@ -106,12 +107,18 @@ export default function TopBar({
   const [open, setOpen] = useState(false)
   const [now, setNow] = useState<Date | null>(null)
   const menuRef = useRef<HTMLDivElement>(null)
-  const dernierNombre = useRef<number | null>(null)
+  const chargees = useRef(false)
+  const [notifsChargees, setNotifsChargees] = useState(0)
 
   function fetchNotifs() {
     kineFetch(`${API}/notifications`, { cache: 'no-store' })
       .then((r) => r.json())
-      .then((d) => setNotifs(Array.isArray(d) ? d : []))
+      .then((d) => {
+        if (!Array.isArray(d)) return
+        chargees.current = true
+        setNotifs(d)
+        setNotifsChargees((c) => c + 1)
+      })
       .catch(() => {})
   }
 
@@ -143,16 +150,28 @@ export default function TopBar({
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   })
 
+  // Carillon + bannière seulement pour une demande VRAIMENT nouvelle. Les
+  // demandes déjà vues sont gardées pour la session : changer de page ne
+  // redéclenche plus la bannière (avant, le premier relevé passait de 0 à N
+  // à chaque page et la bannière restait affichée partout).
+  const cleNonLues = nonLues.map((n) => n.id).sort((x, y) => x - y).join(',')
   useEffect(() => {
-    if (dernierNombre.current !== null && nonLues.length > dernierNombre.current) {
-      const diff = nonLues.length - dernierNombre.current
-      for (let i = 0; i < diff; i++) {
-        setTimeout(() => jouerCarillon(), i * 1100)
-      }
+    if (!chargees.current) return
+    let vues: number[] = []
+    let connues = false
+    try {
+      const brut = sessionStorage.getItem(CLE_VUES)
+      if (brut !== null) { vues = JSON.parse(brut); connues = true }
+    } catch {}
+    const nouvelles = connues ? nonLues.filter((n) => !vues.includes(n.id)) : []
+    if (nouvelles.length > 0) {
+      nouvelles.forEach((_, i) => setTimeout(() => jouerCarillon(), i * 1100))
       onNouvelleNotification?.()
     }
-    dernierNombre.current = nonLues.length
-  }, [nonLues.length])
+    try {
+      sessionStorage.setItem(CLE_VUES, JSON.stringify(Array.from(new Set([...vues, ...nonLues.map((n) => n.id)]))))
+    } catch {}
+  }, [cleNonLues, notifsChargees])
 
   function formatDateHeure(iso: string) {
     const dt = new Date(iso)

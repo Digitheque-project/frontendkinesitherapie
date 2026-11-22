@@ -50,8 +50,21 @@ export async function planifierRendezVous(
     let patient = await findPatientByNumeroDossier(input.patientId, jeton)
 
     // Patient dont une prise en charge précédente a été close : il revient.
-    if (patient && patient.statut === 'archive') {
-      patient = await updatePatient(patient.id, { statut: 'actif' }, jeton)
+    // Patient déjà connu : sa fiche prend les données de la NOUVELLE prescription
+    // (diagnostic, objectifs, prescripteur…), seulement les champs fournis.
+    if (patient) {
+      const maj: Record<string, string> = {}
+      const champs: [string, string | undefined][] = [
+        ['diagnostic', input.diagnostic || input.typeKine],
+        ['urgence', input.urgence],
+        ['alertes', input.alertes],
+        ['objectifs', input.objectifs],
+        ['remarques', input.remarques],
+        ['nomMedecinPrescripteur', input.nomMedecinPrescripteur],
+      ]
+      for (const [k, v] of champs) if (v) maj[k] = v
+      if (patient.statut === 'archive') maj.statut = 'actif'
+      if (Object.keys(maj).length > 0) patient = await updatePatient(patient.id, maj, jeton)
     }
 
     if (!patient) {

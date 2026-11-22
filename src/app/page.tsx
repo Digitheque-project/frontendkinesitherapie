@@ -76,7 +76,7 @@ export default function DashboardPage() {
 
   const stats = useMemo(() => {
     const today = localDay()
-    const rdvAujourdhui = rdvs.filter((r) => r.date === today)
+    const rdvAujourdhui = rdvs.filter((r) => r.date === today && r.statut !== 'annule')
 
     function urgenceDuRdv(rdv: RendezVous) {
       const numeroDossier = rdv.patient?.numeroDossier
@@ -231,6 +231,11 @@ export default function DashboardPage() {
                 <p className="text-sm text-on-surface-variant truncate flex-1">
                   {rdv.motif}
                 </p>
+                {rdv.statut === 'effectue' && (
+                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full flex-shrink-0 bg-emerald-100 text-emerald-700">
+                    Effectué
+                  </span>
+                )}
                 <span className={'text-[11px] font-bold px-2.5 py-1 rounded-full flex-shrink-0 ' + (estExterne(rdv) ? 'bg-indigo-100 text-indigo-700' : 'bg-teal-100 text-teal-700')}>
                   {estExterne(rdv) ? 'Externe' : 'Interne'}
                 </span>

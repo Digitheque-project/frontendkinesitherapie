@@ -8,7 +8,26 @@ import { KINE_API } from '@/lib/gateway'
 import { kineFetch } from '@/lib/kine-fetch'
 
 const API = KINE_API
-const HOURS = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00']
+// Grille par défaut 07:00–19:00, élargie aux rendez-vous hors de ces heures
+// (avant : 08:00–17:00 fixe, un rendez-vous à 23 h n'apparaissait nulle part).
+const HEURE_MIN = 7
+const HEURE_MAX = 19
+let HOURS: string[] = []
+let DEBUT = HEURE_MIN
+function definirPlage(rdvs: { heureDebut?: string; heureFin?: string }[]) {
+  let min = HEURE_MIN, max = HEURE_MAX
+  for (const r of rdvs) {
+    const d = parseInt((r.heureDebut || '').substring(0, 2), 10)
+    const f = parseInt((r.heureFin || '').substring(0, 2), 10)
+    const fm = parseInt((r.heureFin || '').substring(3, 5) || '0', 10)
+    if (!isNaN(d)) { min = Math.min(min, d); max = Math.max(max, d + 1) }
+    if (!isNaN(f)) max = Math.max(max, fm > 0 ? f + 1 : f)
+  }
+  min = Math.max(0, min); max = Math.min(24, max)
+  DEBUT = min
+  HOURS = Array.from({ length: max - min }, (_, i) => String(min + i).padStart(2, '0') + ':00')
+}
+definirPlage([])
 
 interface Patient {
   id: number; nom: string; prenom: string; dateNaissance?: string; sexe?: string
@@ -39,11 +58,11 @@ function toKey(d: Date) { return d.getFullYear() + '-' + String(d.getMonth()+1).
 function addDays(d: Date, n: number) { const r = new Date(d); r.setDate(r.getDate()+n); return r }
 function startOfWeek(d: Date) { const r = new Date(d); const day = r.getDay(); const diff = day===0?-6:1-day; r.setDate(r.getDate()+diff); return r }
 function startOfMonth(d: Date) { return new Date(d.getFullYear(), d.getMonth(), 1) }
-function heureToIndex(h: string) { if (!h) return -1; const hn = parseInt(h.substring(0,2), 10); const mn = parseInt(h.substring(3,5)||'0', 10); const idx = (hn - 8) + mn/60; return (idx >= 0 && idx <= HOURS.length) ? idx : -1 }
+function heureToIndex(h: string) { if (!h) return -1; const hn = parseInt(h.substring(0,2), 10); const mn = parseInt(h.substring(3,5)||'0', 10); const idx = (hn - DEBUT) + mn/60; return (idx >= 0 && idx <= HOURS.length) ? idx : -1 }
 
 function nowPercent() {
   const n = new Date()
-  const idx = (n.getHours() + n.getMinutes()/60) - 8
+  const idx = (n.getHours() + n.getMinutes()/60) - DEBUT
   if (idx < 0 || idx > HOURS.length) return null
   return (idx / HOURS.length) * 100
 }
@@ -65,6 +84,10 @@ export default function CalendrierPage() {
   const [selectedRdv, setSelectedRdv] = useState<RendezVous | null>(null)
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null)
   const [patientLoading, setPatientLoading]   = useState(false)
+  // Les dates dépendent de l'heure du navigateur : rendu après le montage
+  // seulement (le serveur Render est en UTC → erreur React #418).
+  const [monte, setMonte] = useState(false)
+  useEffect(() => { setMonte(true); setCurrent(new Date()) }, [])
 
   useEffect(() => {
     kineFetch(`${API}/rendezvous`, { cache: 'no-store' })
@@ -100,10 +123,11 @@ export default function CalendrierPage() {
   const monthGrid = useMemo(() => { const first=startOfMonth(current); const
 dow=first.getDay()===0?6:first.getDay()-1; const start=addDays(first,-dow); return Array.from({length:42},(_,i)=>addDays(start,i)) }, [current])
 
-  const apptForDay = (key: string) => rdvs.filter(r => r.date === key)
+  const apptForDay = (key: string) => rdvs.filter(r => r.date === key && r.statut !== 'annule')
   const colorOf    = (r: RendezVous) => TYPE_COLOR[r.type] || 'bg-slate-100 border-slate-400 text-slate-700'
   const patientName= (r: RendezVous) => r.patient ? r.patient.prenom + ' ' +
 r.patient.nom : '-'
+  definirPlage(rdvs)
   const today      = toKey(new Date())
   const nowPct     = nowPercent()
 
@@ -140,6 +164,8 @@ r.patient.nom : '-'
       </div>
     )
   }
+
+  if (!monte) return <div className="flex h-screen flex-col overflow-hidden bg-[#F8F9FB]" />
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-[#F8F9FB]">
@@ -359,7 +385,7 @@ r.patient.nom : '-'
                           <h5 className="text-xs font-bold uppercase tracking-wider">{t('cal_rendezVous')}</h5>
                         </div>
                         <p className="text-sm font-bold">{selectedRdv.motif}</p>
-                        <p className="text-xs opacity-80 mt-1">{selectedRdv.date} · {selectedRdv.heureDebut?.substring(0,5)} - {selectedRdv.heureFin?.substring(0,5)}</p>
+                        <p className="text-xs opacity-80 mt-1">{selectedRdv.date ? selectedRdv.date.slice(0, 10).split('-').reverse().join('/') : ''} · {selectedRdv.heureDebut?.substring(0,5)} - {selectedRdv.heureFin?.substring(0,5)}</p>
                         <span className="inline-block mt-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/60">{selectedRdv.type}</span>
                       </div>
                     </div>
@@ -374,7 +400,7 @@ r.patient.nom : '-'
                       <div className="space-y-1.5">
                         {[
                           { label: t('cal_diagnostic'),    value: selectedPatient.diagnostic || '-' },
-                          { label: t('cal_dateAdmission'), value: selectedPatient.dateAdmission || '-' },
+                          { label: t('cal_dateAdmission'), value: selectedPatient.dateAdmission ? selectedPatient.dateAdmission.slice(0, 10).split('-').reverse().join('/') : '-' },
                           { label: t('cal_sexe'),          value: selectedPatient.sexe==='M'?t('cal_homme'): selectedPatient.sexe==='F'?t('cal_femme'): '-' },
                         ].map(item => (
                           <div key={item.label} className="flex justify-between">

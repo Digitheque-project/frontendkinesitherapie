@@ -36,15 +36,12 @@ function serviceIci(services: ServiceJeton[]): ServiceJeton | undefined {
   )
 }
 
+export function utilisateurVide(): UtilisateurConnecte {
+  return { prenom: '', nom: '', displayName: 'Utilisateur', initiales: 'U', role: '', chuLogoUrl: '' }
+}
+
 export function getUtilisateurConnecte(): UtilisateurConnecte {
-  const defaut: UtilisateurConnecte = {
-    prenom: '',
-    nom: '',
-    displayName: 'Utilisateur',
-    initiales: 'U',
-    role: '',
-    chuLogoUrl: '',
-  }
+  const defaut = utilisateurVide()
   if (typeof window === 'undefined') return defaut
 
   try {
