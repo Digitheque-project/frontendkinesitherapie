@@ -50,9 +50,12 @@ export default function PatientsPage() {
       .catch(() => setRdvs([]))
   }, [])
 
+  // Prochain rendez-vous ENCORE OUVERT (planifié ou en cours) : les
+  // rendez-vous effectués ou annulés ne comptent plus (avant, le plus ancien
+  // rendez-vous, même terminé, servait à « Commencer » et « Décaler »).
   function rdvDuPatient(patientId: number): RendezVous | undefined {
     return rdvs
-      .filter(r => r.patientId === patientId)
+      .filter(r => r.patientId === patientId && ['planifie', 'en_cours'].includes(r.statut))
       .sort((a, b) =>
         (a.date + (a.heureDebut || '')).localeCompare(b.date + (b.heureDebut || '')),
       )[0]
@@ -161,6 +164,41 @@ export default function PatientsPage() {
                       <span className="material-symbols-outlined text-sm">visibility</span>
                     </button>
                   </div>
+
+                  {(() => {
+                    const rdv = rdvDuPatient(p.id)
+                    if (!rdv) {
+                      return (
+                        <div className="md:flex-shrink-0 md:w-44">
+                          <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Prochain rendez-vous</p>
+                          <p className="text-xs text-on-surface-variant">Aucun rendez-vous</p>
+                        </div>
+                      )
+                    }
+                    const pad = (n: number) => String(n).padStart(2, '0')
+                    const n = new Date()
+                    const aujourdhui = `${n.getFullYear()}-${pad(n.getMonth() + 1)}-${pad(n.getDate())}`
+                    const maintenant = `${pad(n.getHours())}:${pad(n.getMinutes())}`
+                    const heure = (rdv.heureDebut || '').slice(0, 5)
+                    const enRetard = rdv.statut === 'planifie' && (rdv.date < aujourdhui || (rdv.date === aujourdhui && heure < maintenant))
+                    return (
+                      <div className="md:flex-shrink-0 md:w-44">
+                        <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Prochain rendez-vous</p>
+                        <p className={'text-xs font-semibold ' + (enRetard ? 'text-red-600' : 'text-[#0F172A]')}>
+                          {rdv.date.slice(0, 10).split('-').reverse().join('/')} à {heure}
+                        </p>
+                        <p className="text-[10px] font-bold uppercase tracking-wide">
+                          {rdv.statut === 'en_cours'
+                            ? <span className="text-[#006A8C]">En cours</span>
+                            : enRetard
+                              ? <span className="text-red-600">En retard</span>
+                              : rdv.date === aujourdhui
+                                ? <span className="text-emerald-700">Aujourd&apos;hui</span>
+                                : null}
+                        </p>
+                      </div>
+                    )
+                  })()}
 
                   <div className="md:flex-shrink-0 md:w-32">
                     <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Dernière visite</p>
